@@ -11,7 +11,7 @@
    author="FrankieT, Arija"
    id="32f743256f9d2090ecfef8aa"
    language="Lua"
-   purpose="MUSHclient Soundpack für UNItopia"
+   purpose="UNItopia MUSHclient Soundpack"
    date_written="2020-05-17 15:18:42"
    requires="5.05"
    version="1.0"
@@ -19,9 +19,100 @@
 
 </plugin>
 
-
 <!--  Get our standard constants -->
 
 <include name="constants.lua"/>
 
+<!--  Triggers  -->
+
+<triggers>
+</triggers>
+
+<!--  Aliases  -->
+
+<aliases>
+</aliases>
+
+<!--  Script  -->
+
+<script>
+<![CDATA[
+--require("strict")
+Path = require("pl.path")
+ConfigFile = require("ini")
+PPI = require("ppi")
+
+Plugins = {}
+Plugins[1] = "LuaAudio.xml"
+Plugins[2] = "output_functions.xml"
+Plugins[3] = "omit_blank_lines.xml"
+Plugins[4] = "channel_history.xml"
+
+SOUND_FOLDER = world.GetInfo(74)
+
+UserConfig = {}
+UserConfig.Settings = {}
+UserConfig.Settings.ScreenReaderPlugin = "MushReader"
+UserConfig.Settings.SoundVolume = 20
+UserConfig.Settings.Sounds = 1
+UserConfig.Settings.NumpadMode = 1
+
+function OnPluginInstall()
+  LoadDependentPlugins(Plugins)
+
+  if (IsFirstSoundpackStart()) then
+    world.Note("Anscheinend wird das Soundpack zum ersten mal gestartet. Generiere benutzerspezivische Einstellungsdatei...")
+    SaveUserConfig()
+    world.Note("Einstellungsdatei generiert. Viel Spass mit dem UNItopia Soundpack!")
+  else
+    LoadUserConfig()
+  end
+end
+
+function OnPluginDisconnect()
+  SaveUserConfig()
+end
+
+function LoadDependentPlugins(plugins)
+  for i, plugin in pairs(plugins) do
+    local pluginPath = world.GetInfo(60).."/"..plugin
+    world.LoadPlugin(pluginPath)
+  end
+
+  -- Now, load also the TTS plugin
+  world.LoadPlugin(world.GetInfo(60).."/"..UserConfig.Settings.ScreenReaderPlugin..".xml")
+end
+
+function LoadUserConfig()
+  local configTable = ConfigFile.read("settings.dat")
+
+  if (configTable) then
+    for name, section in pairs(configTable) do
+      for optionName, optionValue in pairs (section) do
+        local config = nil
+        config = tonumber(optionValue)
+        if (config == nil) then
+          config = optionValue
+        end
+        if (UserConfig[name] == nil) then
+          UserConfig[name] = {}
+        end
+        UserConfig[name][optionName] = config
+      end
+    end
+  end
+end
+
+function SaveUserConfig()
+  ConfigFile.write("settings.dat", UserConfig)
+end
+
+function IsFirstSoundpackStart()
+  if (not Path.exists("settings.dat")) then 
+    return true 
+  end
+  return false
+  end
+]]>
+</script>
 </muclient>
