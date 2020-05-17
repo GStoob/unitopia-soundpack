@@ -8,7 +8,8 @@ Um eine Konsistenz in den verschiedenen Plugins, Klassen, funktionen usw. zu gar
 ## Allgemein
 - Aussagekräftige Namen für Variablen, Funktionen etc. verwenden (z.B. `PlaySound()` statt `PS()`)
 - Bitte keine ungarische Notation verwenden.
-- Lokale Variablen - sofern möglich - den globalen vorziehen. Dies gilt vor allem für Funktionen und Skripte, die Variablen definieren, die nur im aktuellen Scope der Funktion  / des Skripts von Relevants sind.
+- Lokale Variablen - sofern möglich - den globalen vorziehen. Dies gilt vor allem für Funktionen und Skripte, die Variablen definieren, die nur im aktuellen Scope der Funktion  / des Skripts von Relevanz sind.
+- Einrückung: 2 Leerzeichen
 
 ## Funktionen
 - Notation in Pascal Case. Beispiel: `InitializeConfig()`
