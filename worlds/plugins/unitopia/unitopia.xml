@@ -13,6 +13,7 @@
    language="Lua"
    purpose="UNItopia MUSHclient Soundpack"
    date_written="2020-05-17 15:18:42"
+      save_state="n"
    requires="5.05"
    version="1.0"
    >
@@ -37,10 +38,11 @@
 
 <script>
 <![CDATA[
---require("strict")
 Path = require("pl.path")
 ConfigFile = require("ini")
 PPI = require("ppi")
+Constants = require("unitopia.constants")
+Audio = nil
 
 Plugins = {}
 Plugins[1] = "LuaAudio.xml"
@@ -54,8 +56,14 @@ UserConfig = {}
 UserConfig.Settings = {}
 UserConfig.Settings.ScreenReaderPlugin = "MushReader"
 UserConfig.Settings.SoundVolume = 20
-UserConfig.Settings.Sounds = 1
-UserConfig.Settings.NumpadMode = 1
+UserConfig.Settings.AreaVolume = 15
+UserConfig.Settings.MusicVolume = 10
+UserConfig.Settings.SoundsMuted = 0
+UserConfig.Settings.AreaMuted = 0
+UserConfig.Settings.MusicMuted = 0
+
+AreaSoundHandle = 0 -- Holds a reference to the current area sound being played. 0 = no sound is playing.
+MusicSoundHandle = 0 -- Holds a reference to the current background music being played. 0 = no music is playing.
 
 function OnPluginInstall()
   LoadDependentPlugins(Plugins)
@@ -67,6 +75,13 @@ function OnPluginInstall()
   else
     LoadUserConfig()
   end
+
+  Audio = PPI.load(Constants.Plugins.AUDIO_PLUGIN_ID)
+
+  if (not Audio) then
+    error("Fehler beim Initialisieren des Audio Systems")
+  end
+  InitializeNumPad()
 end
 
 function OnPluginDisconnect()
@@ -113,6 +128,47 @@ function IsFirstSoundpackStart()
   end
   return false
   end
+
+function PlaySound(sound, volume, panning)
+  volume = volume or UserConfig.Settings.SoundVolume
+  panning = panning or 0
+
+  if (UserConfig.Settings.SoundMuted == 1) then
+    return
+  end
+
+  return Audio.play(SOUND_FOLDER.."/"..sound, 0, panning, volume)
+end
+
+function PlayLoopedSound(sound, volume, panning)
+  volume = volume or UserConfig.Settings.SoundVolume
+  panning = panning or 0
+
+  if (UserConfig.Settings.SoundMuted == 1) then
+    return
+  end
+
+  return Audio.play(SOUND_FOLDER.."/"..sound, 1, panning, volume)
+end
+
+function StopSound(soundId)
+  if ((tonumber(soundId) ~= nil) and (Audio.isPlaying(soundId) == 1)) then
+    Audio.stop(id)
+  end
+end
+
+function InitializeNumPad()
+  world.Accelerator('Numpad1', 'sw')
+  world.Accelerator('Numpad2', 's')
+  world.Accelerator('Numpad3', 'so')
+  world.Accelerator('Numpad4', 'w')
+  world.Accelerator('Numpad6', 'o')
+  world.Accelerator('Numpad7', 'nw')
+  world.Accelerator('Numpad8', 'n')
+  world.AcceleratorTo('Numpad9','send_command("no")', sendto.script)
+  world.Accelerator('Add', 'r')
+  world.Accelerator('Subtract', 'h')
+end
 ]]>
 </script>
 </muclient>
