@@ -38,20 +38,23 @@
 
 <script>
 <![CDATA[
+require("unitopia.configuration-manager")
+require("unitopia.audio-system")
+require("unitopia.plugin-manager")
+require("pl.class")
+
 Path = require("pl.path")
-ConfigFile = require("ini")
-PPI = require("ppi")
-Constants = require("unitopia.constants")
-Audio = nil
+CONFIG_FILE_NAME = "settings.dat"
+PLUGIN_DIRECTORY = world.GetInfo(60) -- Points to worlds/plugins
 
-Plugins = {}
-Plugins[1] = "LuaAudio.xml"
-Plugins[2] = "output_functions.xml"
-Plugins[3] = "omit_blank_lines.xml"
-Plugins[4] = "channel_history.xml"
+CurrentArea = ""
+CurrentMusic = ""
 
-SOUND_FOLDER = world.GetInfo(74)
+Audio = AudioSystem()
+PluginManager = PluginManager()
+ConfigurationManager = ConfigurationManager()
 
+-- The following are the user specific settings. The tables hold default values, so that a valid settings file can be generated on the first soundpack start
 UserConfig = {}
 UserConfig.Settings = {}
 UserConfig.Settings.ScreenReaderPlugin = "MushReader"
@@ -62,68 +65,45 @@ UserConfig.Settings.SoundsMuted = 0
 UserConfig.Settings.AreaMuted = 0
 UserConfig.Settings.MusicMuted = 0
 
-AreaSoundHandle = 0 -- Holds a reference to the current area sound being played. 0 = no sound is playing.
-MusicSoundHandle = 0 -- Holds a reference to the current background music being played. 0 = no music is playing.
-
 function OnPluginInstall()
-  LoadDependentPlugins(Plugins)
+  -- Initialize all required plugins
+  PluginManager:AddPlugin("LuaAudio.xml")
+  PluginManager:AddPlugin("output_functions.xml")
+  PluginManager:AddPlugin("omit_blank_lines.xml")
+  PluginManager:AddPlugin("channel_history.xml")
+  PluginManager:AddPlugin(UserConfig.Settings.ScreenReaderPlugin..".xml")
 
+  PluginManager:LoadPlugins(PLUGIN_DIRECTORY)
+
+  -- Check if this is the first soundpack start. This is done by checking whether the settings file exists or not.
   if (IsFirstSoundpackStart()) then
     world.Note("Anscheinend wird das Soundpack zum ersten mal gestartet. Generiere benutzerspezivische Einstellungsdatei...")
-    SaveUserConfig()
+    ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
     world.Note("Einstellungsdatei generiert. Viel Spass mit dem UNItopia Soundpack!")
   else
-    LoadUserConfig()
+    UserConfig = ConfigurationManager:LoadUserConfig(CONFIG_FILE_NAME)
+    world.Note("Einstellungen geladen.")
   end
 
-  Audio = PPI.load(Constants.Plugins.AUDIO_PLUGIN_ID)
+  -- Now, initialize the audio output plugin
+  Audio:InitializeLuaAudio()
+end
 
-  if (not Audio) then
-    error("Fehler beim Initialisieren des Audio Systems")
-  end
+function OnPluginConnect()
+  PlaySound("Misc/SoundpackStart.ogg")
+  InitializeHotkeys()
   InitializeNumPad()
 end
 
 function OnPluginDisconnect()
-  SaveUserConfig()
-end
-
-function LoadDependentPlugins(plugins)
-  for i, plugin in pairs(plugins) do
-    local pluginPath = world.GetInfo(60).."/"..plugin
-    world.LoadPlugin(pluginPath)
-  end
-
-  -- Now, load also the TTS plugin
-  world.LoadPlugin(world.GetInfo(60).."/"..UserConfig.Settings.ScreenReaderPlugin..".xml")
-end
-
-function LoadUserConfig()
-  local configTable = ConfigFile.read("settings.dat")
-
-  if (configTable) then
-    for name, section in pairs(configTable) do
-      for optionName, optionValue in pairs (section) do
-        local config = nil
-        config = tonumber(optionValue)
-        if (config == nil) then
-          config = optionValue
-        end
-        if (UserConfig[name] == nil) then
-          UserConfig[name] = {}
-        end
-        UserConfig[name][optionName] = config
-      end
-    end
-  end
-end
-
-function SaveUserConfig()
-  ConfigFile.write("settings.dat", UserConfig)
+  PlaySound("Misc/Exit.ogg")
+  ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
+  world.Note("Einstellungen gespeichert.")
+  PluginManager:UnloadPlugins(PLUGIN_DIRECTORY)
 end
 
 function IsFirstSoundpackStart()
-  if (not Path.exists("settings.dat")) then 
+  if (not Path.exists(CONFIG_FILE_NAME)) then 
     return true 
   end
   return false
@@ -133,28 +113,134 @@ function PlaySound(sound, volume, panning)
   volume = volume or UserConfig.Settings.SoundVolume
   panning = panning or 0
 
-  if (UserConfig.Settings.SoundMuted == 1) then
-    return
-  end
-
-  return Audio.play(SOUND_FOLDER.."/"..sound, 0, panning, volume)
+  return Audio:Play(sound, volume, panning, UserConfig.Settings.SoundsMuted)
 end
 
 function PlayLoopedSound(sound, volume, panning)
   volume = volume or UserConfig.Settings.SoundVolume
   panning = panning or 0
 
-  if (UserConfig.Settings.SoundMuted == 1) then
-    return
-  end
-
-  return Audio.play(SOUND_FOLDER.."/"..sound, 1, panning, volume)
+  return Audio:PlayLooped(sound, volume, panning, UserConfig.Settings.SoundMuted)
 end
 
-function StopSound(soundId)
-  if ((tonumber(soundId) ~= nil) and (Audio.isPlaying(soundId) == 1)) then
-    Audio.stop(id)
+function PlayAmbienceLoop(areaName, sound, volume)
+  volume = volume or UserConfig.Settings.AreaVolume
+
+  -- TODO: Define a useful logic here to determine the current area for which we should play back the ambience sound
+  -- My idea is to have a list with all the areas defined, through which we can iterate here
+  -- Or perhaps, if we can read this info out using the GMCP protocol we might not even require a table with all the possible areas.
+
+  if (CurrentArea == areaName) then return 0 end  
+
+  CurrentArea = areaName
+  return Audio:PlayAreaAmbience(sound, volume, 0, UserConfig.Settings.AreaMuted)
+end
+
+function PlayMusic(areaName, musicFile, volume)
+  volume = volume or UserConfig.Settings.MusicVolume
+
+  -- TODO: Define a useful logic here to determine the current area for which we should play back the music
+  -- My idea is to have a list with all the areas defined, through which we can iterate here
+  -- Or perhaps, if we can read this info out using the GMCP protocol we might not even require a table with all the possible areas.
+
+  if (CurrentMusic == areaName) then return 0 end
+
+  CurrentMusic = areaName
+  return Audio:PlayMusic(musicFile, volume, 0, UserConfig.Settings.MusicMuted)
+end
+
+function SetSoundVolume(increment)
+  if (UserConfig.Settings.SoundVolume + increment <= 100) and (UserConfig.Settings.SoundVolume + increment >= 0) then
+    UserConfig.Settings.SoundVolume = UserConfig.Settings.SoundVolume + increment
+    PlaySound("Misc/Switch.ogg")
+    world.Note("Lautstaerke fuer Sounds: "..tostring(UserConfig.Settings.SoundVolume).."%.")
+  else
+    if (UserConfig.Settings.SoundVolume + increment > 100) then
+      world.Note("Das Maximum fuer die Sound-Lautstaerke wurde erreicht.")
+    elseif (UserConfig.Settings.SoundVolume + increment < 0) then
+    world.Note("Das Minimum fuer die Sound-Lautstaerke wurde erreicht.")
+    end
+    PlaySound("Misc/Error.ogg")
   end
+end
+
+function SetAmbienceVolume(increment)
+  if (UserConfig.Settings.AreaVolume + increment <= 100) and (UserConfig.Settings.AreaVolume + increment >= 0) then
+    UserConfig.Settings.AreaVolume = UserConfig.Settings.AreaVolume + increment
+    PlaySound("Misc/Switch.ogg")
+    world.Note("Lautstaerke fuer Umgebung: "..tostring(UserConfig.Settings.AreaVolume).."%.")
+
+    local ambience = Audio:GetCurrentAmbienceSoundHandle()
+
+    if (tonumber(ambience) ~= nil) and (Audio:IsPlaying(ambience)) then
+      Audio:SetVolume(UserConfig.Settings.AreaVolume, ambience)
+    end
+  else
+    if (UserConfig.Settings.AreaVolume + increment > 100) then
+      world.Note("Das Maximum für die Umgebungs-Lautstaerke wurde erreicht.")
+    elseif (UserConfig.Settings.AreaVolume + increment < 0) then
+    world.Note("Das Minimum für die Umgebungs-Lautstaerke wurde erreicht.")
+    end
+    PlaySound("Misc/Error.ogg")
+  end
+end
+
+function SetMusicVolume(increment)
+  if (UserConfig.Settings.MusicVolume + increment <= 100) and (UserConfig.Settings.MusicVolume + increment >= 0) then
+    UserConfig.Settings.MusicVolume = UserConfig.Settings.MusicVolume + increment
+    PlaySound("Misc/Switch.ogg")
+    world.Note("Lautstaerke fuer Hintergrundmusik: "..tostring(UserConfig.Settings.MusicVolume).."%.")
+
+    local music = Audio:GetCurrentMusicSoundHandle()
+
+    if (tonumber(music) ~= nil) and (Audio:IsPlaying(music)) then
+    Audio:SetVolume(UserConfig.Settings.MusicVolume, music)
+    end
+  else
+    if (UserConfig.Settings.MusicVolume + increment > 100) then
+      world.Note("Das Maximum fuer die Hintergrundmusik-Lautstaerke wurde erreicht.")
+    elseif (UserConfig.Settings.MusicVolume + increment < 0) then
+    world.Note("Das Minimum fuer die Hintergrundmusik-Lautstaerke wurde erreicht.")
+    end
+    PlaySound("Misc/Error.ogg")
+  end
+end
+
+function ToggleMute()
+  local ambience = Audio:GetCurrentAmbienceSoundHandle()
+  local music = Audio:GetCurrentMusicSoundHandle()
+
+  if (UserConfig.Settings.SoundsMuted == 0) and (UserConfig.Settings.AreaMuted == 0) and (UserConfig.Settings.MusicMuted == 0) then
+    PlaySound("Misc/Switch.ogg")
+    UserConfig.Settings.SoundsMuted = 1
+    UserConfig.Settings.AreaMuted = 1
+    UserConfig.Settings.MusicMuted = 1
+
+    if (tonumber(ambience) ~= nil) then
+      Audio:Stop(ambience)
+    end
+    if (tonumber(music) ~= nil) then
+      Audio:Stop(music)
+    end
+    world.Note("Soundpack komplett stummgeschaltet.")
+  else
+    UserConfig.Settings.SoundsMuted = 0
+    UserConfig.Settings.AreaMuted = 0
+    UserConfig.Settings.MusicMuted = 0
+    world.Note("Stummschaltung aufgehoben.")
+    PlaySound("Misc/Switch.ogg")
+  end
+end
+
+function InitializeHotkeys()
+  -- Volume
+  world.AcceleratorTo("F9", "SetSoundVolume(-5)", sendto.script)
+  world.AcceleratorTo("F10", "SetSoundVolume(5)", sendto.script)
+  world.AcceleratorTo("ctrl+F9", "SetAmbienceVolume(-5)", sendto.script)
+  world.AcceleratorTo("ctrl+F10", "SetAmbienceVolume(5)", sendto.script)
+    world.AcceleratorTo("ctrl+shift+F9", "SetMusicVolume(-5)", sendto.script)
+  world.AcceleratorTo("ctrl+shift+F10", "SetMusicVolume(5)", sendto.script)
+  world.AcceleratorTo("F11", "ToggleMute()", sendto.script)
 end
 
 function InitializeNumPad()
