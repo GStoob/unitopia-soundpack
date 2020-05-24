@@ -37,6 +37,14 @@
   </trigger>
   <trigger
   enabled="y"
+  match="*spricht zu*"
+  send_to="12"
+  sequence="100"
+  >
+  <send>PlaySound("Com/FriendSpeech.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
   match="*sagt:*"
   send_to="12"
   sequence="100"
@@ -194,6 +202,76 @@
   omit_from_output="y"
   sequence="100"
   >
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*sehen erholungs*"
+  send_to="12"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  <send>PlaySound("Angel/WingDown.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*Sie sehen recht frisch und fit*"
+  send_to="12"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  <send>PlaySound("Angel/WingUp.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*doch etwas besser schonen sollen*"
+  send_to="12"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  <send>PlaySound("Angel/WingError.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="Das oktarine Leuchten des Magystrons erfrischt dich."
+  send_to="12"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  <send>PlaySound("Misc/Reg.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*Die Kraft der Eiche*"
+  send_to="12"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  <send>PlaySound("Misc/Reg.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*wie eine starke, dunkle Macht dich*"
+  send_to="12"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  <send>PlaySound("Misc/Reg.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*Endlich hast du mal wieder Zeit, deinem Geist freien *"
+  send_to="12"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  <send>PlaySound("Misc/Reg.ogg")</send>
   </trigger>
 
 </triggers>
