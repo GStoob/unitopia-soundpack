@@ -131,6 +131,8 @@ function GmcpFramework:DisableDebugging()
   self.DebuggingEnabled = false
 end
 
+function GmcpFramework:IsDebugging() return self.DebuggingEnabled end
+
 function GmcpFramework:Log(message, content)
   world.Note(message)
   if (type(content) == "table") then
