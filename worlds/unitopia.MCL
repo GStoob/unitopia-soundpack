@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE muclient>
-<!-- Saved on Freitag, Mai 22, 2020, 1:04 PM -->
+<!-- Saved on Samstag, Mai 23, 2020, 6:26  -->
 <!-- MuClient version 5.05 -->
 <!-- Written by Nick Gammon -->
 <!-- Home Page: http://www.mushclient.com/ -->
@@ -8,7 +8,7 @@
 <world
    muclient_version="5.05"
    world_file_version="15"
-   date_saved="2020-05-22 13:04:01"
+   date_saved="2020-05-23 18:26:21"
 
    auto_say_override_prefix="-"
    auto_say_string="say "
@@ -95,7 +95,6 @@
    use_custom_link_colour="y"
    use_default_input_font="y"
    use_default_output_font="y"
-   utf_8="y"
    warn_if_scripting_inactive="y"
    wrap="y"
    wrap_column="80"
@@ -109,7 +108,7 @@
 <triggers
    muclient_version="5.05"
    world_file_version="15"
-   date_saved="2020-05-22 13:04:01"
+   date_saved="2020-05-23 18:26:21"
   >
 </triggers>
 
@@ -118,7 +117,7 @@
 <aliases
    muclient_version="5.05"
    world_file_version="15"
-   date_saved="2020-05-22 13:04:01"
+   date_saved="2020-05-23 18:26:21"
   >
 </aliases>
 
@@ -127,7 +126,7 @@
 <timers
    muclient_version="5.05"
    world_file_version="15"
-   date_saved="2020-05-22 13:04:01"
+   date_saved="2020-05-23 18:26:21"
   >
 </timers>
 
@@ -136,7 +135,7 @@
 <macros
    muclient_version="5.05"
    world_file_version="15"
-   date_saved="2020-05-22 13:04:01"
+   date_saved="2020-05-23 18:26:21"
   >
 
   <macro name="up" type="send_now" >
@@ -230,8 +229,10 @@
 <variables
    muclient_version="5.05"
    world_file_version="15"
-   date_saved="2020-05-22 13:04:01"
+   date_saved="2020-05-23 18:26:21"
   >
+  <variable name="mxp_roomexit">Norden</variable>
+  <variable name="mxp_roomname">Im Magierzentrum, Magystron.</variable>
 </variables>
 
 <!-- colours -->
@@ -239,7 +240,7 @@
 <colours
    muclient_version="5.05"
    world_file_version="15"
-   date_saved="2020-05-22 13:04:01"
+   date_saved="2020-05-23 18:26:21"
   >
 
 <ansi>
@@ -296,7 +297,7 @@
 <keypad
    muclient_version="5.05"
    world_file_version="15"
-   date_saved="2020-05-22 13:04:01"
+   date_saved="2020-05-23 18:26:21"
   >
 
   <key name="0" >
@@ -410,7 +411,7 @@
 <printing
    muclient_version="5.05"
    world_file_version="15"
-   date_saved="2020-05-22 13:04:01"
+   date_saved="2020-05-23 18:26:21"
   >
 
 <ansi>
@@ -433,4 +434,11 @@
 
 </ansi>
 </printing>
+
+<!-- plugins -->
+<include name="LuaAudio.xml" plugin="y" />
+<include name="output_functions.xml" plugin="y" />
+<include name="omit_blank_lines.xml" plugin="y" />
+<include name="channel_history.xml" plugin="y" />
+<include name="MushReader.xml" plugin="y" />
 </muclient>

@@ -27,6 +27,175 @@
 <!--  Triggers  -->
 
 <triggers>
+  <trigger
+  enabled="y"
+  match="*fragt:*"
+  send_to="12"
+  sequence="100"
+  >
+  <send>PlaySound("Com/Say.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*sagt:*"
+  send_to="12"
+  sequence="100"
+  >
+  <send>PlaySound("Com/Say.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*fragt dich:*"
+  send_to="12"
+  sequence="100"
+  >
+  <send>PlaySound("Com/Say.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*sagt zu*"
+  send_to="12"
+  sequence="100"
+  >
+  <send>PlaySound("Com/Say.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*hinaus in die Lüfte zu tragen.*"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*redet zu*"
+  send_to="12"
+  sequence="100"
+  >
+  <send>PlaySound("Com/Speech.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*schwirrt heran und*"
+  send_to="12"
+  sequence="100"
+  >
+  <send>PlaySound("Com/Kuscheli.ogg")</send>
+  </trigger>
+  <trigger
+  match="*Gastfreundschaft*"
+  send_to="12"
+  sequence="100"
+  >
+  <send>PlaySound("Com/FriendSpeech.ogg")</send>
+  </trigger>
+  <trigger
+  match="*teilt dir*"
+  send_to="12"
+  sequence="100"
+  >
+  <send>PlaySound("Com/GuildSpeech.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="Auf der Roemerstrasse IV.*"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+  <trigger
+  enabled="y"
+  match="Auf der Roemerstrasse V."
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+  <trigger
+  enabled="y"
+  match="Auf der Roemerstrasse VII."
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+  <trigger
+  enabled="y"
+  match="Auf einem Pfad im Maerchenland."
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+  <trigger
+  enabled="y"
+  match="Auf einem Pfad."
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+  <trigger
+  enabled="y"
+  match="Auf einem Weg."
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+  <trigger
+  enabled="y"
+  match="Auf einem schmalen Pfad."
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+  <trigger
+  enabled="y"
+  match="Auf einer neu ausgebauten Strasse."
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+  <trigger
+   enabled="y"
+  match="Ein Weg in einer Steppenlandschaft."
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*sich wieder erholt und*"
+  send_to="12"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  <send>PlaySound("Angel/WingReg.ogg")</send>
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*sich deutlich auf deine Ausdauer nieder.*"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+  <trigger
+  enabled="y"
+  match="*hinaus in die*"
+  omit_from_log="y"
+  omit_from_output="y"
+  sequence="100"
+  >
+  </trigger>
+
 </triggers>
 
 <!--  Aliases  -->
