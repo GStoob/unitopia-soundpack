@@ -37,30 +37,42 @@
     regexp="y"
     sequence="100"
     ignore_case="y"
+    send_to="12"
   >
   <send>
-    if (GmcpFramework:IsDebugging()) then
-      GmcpFramework:DisableDebugging()
+    if (GmcpFramework:IsLogOutputEnabled()) then
+      GmcpFramework:DisableLogOutput()
     else
-      GmcpFramework:EnableDebugging()
+      GmcpFramework:EnableLogOutput()
+    end
+    if (IsDebugging) then
+      IsDebugging = false
+      world.Note("Debugging disabled")
+    else
+      IsDebugging = true
+      world.Note("Debugging enabled")
     end
   </send>
+  </alias>
+  <alias
+    match="^//gmcpregister all$"
+    regexp="y"
+    enabled="y"
+    sequence="100"
+    send_to="12"
+  >
+  <send>RegisterModules()</send>
   </alias>
   <alias
     match="//gmcpsend *"
     enabled="y"
     sequence="100"
+    send_to="12"
   >
   <send>
-    local wildcards = %1
-    local t = utils.split(wildcards, " ", 1)
-    local command, params = t[1], t[2]
-
-    if (params:len() == 0) then
-      world.Note("Invalid parameters passed in to gmcpsend command")
-    else
-      SendGmcp(command, params)
-    end
+    local wildcards = '%1'
+    if (IsDebugging) then world.Note("Sending GMCP request...") end
+    SendGmcpData(wildcards)
   </send>
   </alias>
 </aliases>
@@ -72,48 +84,54 @@ require("unitopia.gmcp.gmcp-framework")
 require("json")
 Constants = require("unitopia.constants")
 PPI = require("ppi")
-GmcpFramework = nil
+GmcpFramework = GmcpFramework()
+IsDebugging = false
 
 SupportedGmcpModules = {
   "Char 1",
-  "Char.Skills 1",
-    "Char.Items 1",
-      "Comm.Channel 1",
-  "Room 1",
+  "Char.Vitals 1",
+  "Char.Items 1",
+  "Comm 1",
+  "Files 1",
+  "Playermap 1",
   "Sound 1"
 }
 
 function OnPluginInstall()
-  GmcpFramework = GmcpFramework()
-
-  PPI.Expose("AddListener", AddListener)
-  PPI.Expose("RemoveListener", RemoveListener)
-  PPI.Expose("SendGmcp", SendGmcp)
+  PPI.Expose("Listen", AddListener)
+  PPI.Expose("Unlisten", RemoveListener)
+  PPI.Expose("RegisterModules", RegisterModules)
+  
+  PPI.Expose("GetById", function(id)
+    return GmcpFramework:GetById(id)
+    end)
 end
 
 function OnPluginTelnetRequest (type, data)
-  local clientInfo = { client = "MUSHclient", version = world.Version() }
+  if (type == Constants.GmcpProtocolNegotiation.GMCP) then
+    if (data == "DO") then
+      return true
+    elseif (data == "WILL") then
+      return true
+    elseif (data == "SEND_DO") then
+      local clientInfo = { client = "MUSHclient", version = world.Version() }
 
-  if (type ~= Constants.GmcpProtocolNegotiation.GMCP) then
-    return false
-  end
-
-  if (data == "will") then
+      -- Establish handshake
+      local handshakeRequest = "Core.Hello " .. json.encode(clientInfo)
+      SendGmcpData(handshakeRequest)
     return true
-  elseif (data == "send_do") then
-    -- Establish handshake
-    SendGmcp("Core.Hello", clientInfo)
-
-    -- Now, enable all supported GMCP modules
-    SendGmcp("Core.Supports.Set", SupportedGmcpModules)
-    return true
+    end  
   end
   return false
 end
 
-function OnPluginTelnetSubnegotiation (type, data)
+function OnPluginTelnetSubnegotiation(type, data)
   if (type ~= Constants.GmcpProtocolNegotiation.GMCP) then
     return
+  end
+
+  if (IsDebugging) then
+    world.Note("OnPluginTelnetSubnegotiation: Received GMCP data...")
   end
   GmcpFramework:ParseRawData(data)
 end
@@ -126,20 +144,16 @@ function RemoveListener(event, callback)
   return GmcpFramework:RemoveListener(event, callback)
 end
 
-function SendGmcp(message, data)
-  assert(message, "Message must not be nil")
-  assert(data, "Data must not be nil")
+function RegisterModules()
+  local moduleRequest = "Core.Supports.Set " .. json.encode(SupportedGmcpModules)
 
-  local serializedData = ""
+  if (IsDebugging) then world.Note("Registering supported GMCP modules...") end
 
-  if (data == "table") then
-    serializedData = json.encode(data)
-  elseif (data == "string") then
-    serializedData = data
-  end
+        SendGmcpData(moduleRequest)
+end
 
-  local requestMessage = string.format(message.." "..serializedData)
-  GmcpFramework:SendGmcpPacket(requestMessage)
+function SendGmcpData(data)
+  return GmcpFramework:SendGmcpPacket(data)
 end
 </script>
 </muclient>

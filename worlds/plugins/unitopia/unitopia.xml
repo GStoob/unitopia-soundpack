@@ -290,6 +290,7 @@ require("unitopia.audio-system")
 require("unitopia.plugin-manager")
 require("pl.class")
 
+PPI = require("ppi")
 Path = require("pl.path")
 CONFIG_FILE_NAME = "settings.dat"
 PLUGIN_DIRECTORY = world.GetInfo(60) -- Points to worlds/plugins
@@ -300,6 +301,7 @@ CurrentMusic = ""
 Audio = AudioSystem()
 PluginManager = PluginManager()
 ConfigurationManager = ConfigurationManager()
+Gmcp = nil
 
 -- The following are the user specific settings. The tables hold default values, so that a valid settings file can be generated on the first soundpack start
 UserConfig = {}
@@ -319,7 +321,7 @@ function OnPluginInstall()
   PluginManager:AddPlugin("omit_blank_lines.xml")
   PluginManager:AddPlugin("channel_history.xml")
   PluginManager:AddPlugin(UserConfig.Settings.ScreenReaderPlugin..".xml")
-
+  PluginManager:AddPlugin("unitopia/GMCP.xml")
   PluginManager:LoadPlugins(PLUGIN_DIRECTORY)
 
   -- Check if this is the first soundpack start. This is done by checking whether the settings file exists or not.
@@ -334,6 +336,28 @@ function OnPluginInstall()
 
   -- Now, initialize the audio output plugin
   Audio:InitializeLuaAudio()
+
+  -- Bootstraps the GMCP plugin once it's loaded
+  -- (ID, on_success, on_failure)
+  PPI.OnLoad(Constants.Plugins.GMCP_PLUGIN_ID, function(gmcp)
+    world.Note("GMCP Plugin geladen")
+    gmcp.Listen("Core.Hello", OnCoreHello)
+    Gmcp = gmcp
+  end, 
+  function (error)
+    world.Note("Fehler beim initialisieren des GMCP Plugins: "..error)
+  end)
+end
+
+function OnPluginListChanged()
+  -- Delayed call to PPI.Refresh() to ensure that all plugins are loaded on execution of this method
+  DoAfterSpecial(0.5, "PPI.Refresh()", sendto.script)
+end
+
+function OnCoreHello(message, data)
+  -- Now, register all the GMCP modules that UNItopia supports
+  -- We can do this only after the handshake has been established
+  Gmcp.RegisterModules()
 end
 
 function OnPluginConnect()
