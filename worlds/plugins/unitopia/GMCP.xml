@@ -80,7 +80,7 @@
 <!--  Script  -->
 
 <script>
-require("unitopia.gmcp.gmcp-framework")
+require("unitopia.gmcp-framework")
 require("json")
 Constants = require("unitopia.constants")
 PPI = require("ppi")
