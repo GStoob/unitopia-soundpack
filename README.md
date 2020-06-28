@@ -8,4 +8,4 @@ Please note that any further information (such as contributing guidelines) are i
 Contributions are always welcome, however we kindly ask you to follo our
 [Contributing Guidelines](CONTRIBUTING.md) to ensure a consistent code quality in the repo.
 
-Also please consider to open an [issue](https://github.com/GStoob/unitopia-soundpack/issues) before yo implement anything so that we can discuss your feature request.
+Also please consider to open an [issue](https://github.com/GStoob/unitopia-soundpack/issues) before implementing anything, so that we can discuss your feature request.
