@@ -340,7 +340,6 @@ function OnPluginInstall()
   -- Bootstraps the GMCP plugin once it's loaded
   -- (ID, on_success, on_failure)
   PPI.OnLoad(Constants.Plugins.GMCP_PLUGIN_ID, function(gmcp)
-    world.Note("GMCP Plugin geladen")
     gmcp.Listen("Core.Hello", OnCoreHello)
     Gmcp = gmcp
   end, 
@@ -522,7 +521,7 @@ function InitializeNumPad()
   world.Accelerator('Numpad6', 'o')
   world.Accelerator('Numpad7', 'nw')
   world.Accelerator('Numpad8', 'n')
-  world.AcceleratorTo('Numpad9','send_command("no")', sendto.script)
+  world.AcceleratorTo('Numpad9','world.Execute("no")', sendto.script)
   world.Accelerator('Add', 'r')
   world.Accelerator('Subtract', 'h')
 end
