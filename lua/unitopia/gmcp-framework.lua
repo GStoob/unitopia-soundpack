@@ -139,3 +139,5 @@ function GmcpFramework:Log(message, content)
     world.Note(content)
   end
 end
+
+return GmcpFramework
