@@ -94,7 +94,8 @@ SupportedGmcpModules = {
   "Comm 1",
   "Files 1",
   "Playermap 1",
-  "Sound 1"
+  "Sound 1",
+  "Room 1"
 }
 
 function OnPluginInstall()
