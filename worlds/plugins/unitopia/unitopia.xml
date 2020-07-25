@@ -341,8 +341,9 @@ function OnPluginInstall()
   -- (ID, on_success, on_failure)
   PPI.OnLoad(Constants.Plugins.GMCP_PLUGIN_ID, function(gmcp)
     gmcp.Listen("Core.Hello", OnCoreHello)
+    gmcp.Listen("Comm.Say", OnUnitopiaCommunication)
     Gmcp = gmcp
-  end, 
+  end,
   function (error)
     world.Note("Fehler beim initialisieren des GMCP Plugins: "..error)
   end)
@@ -370,6 +371,15 @@ function OnPluginDisconnect()
   ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
   world.Note("Einstellungen gespeichert.")
   PluginManager:UnloadPlugins(PLUGIN_DIRECTORY)
+end
+
+function OnUnitopiaCommunication(message, rawData)
+  message = string.lower(message)
+  if (message == "comm.say") then
+    PlaySound("Comm/Say.ogg")
+  elseif (message == "comm.tell") then
+    PlaySound("Comm/Tell.ogg")
+  end
 end
 
 function IsFirstSoundpackStart()
