@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE muclient>
+<!-- Saved on Montag, August 03, 2020, 9:51 AM -->
+<!-- MuClient version 5.05 -->
+<!-- Written by Nick Gammon -->
+<!-- Home Page: http://www.mushclient.com/ -->
+
+<!-- Plugin state saved. Plugin: "LuaAudio". World: "unitopia". -->
+
+<muclient>
+
+<!-- variables -->
+
+<variables
+   muclient_version="5.05"
+   world_file_version="15"
+   date_saved="2020-08-03 09:51:56"
+  >
+  <variable name="vol">100</variable>
+</variables>
+</muclient>

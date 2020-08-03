@@ -244,6 +244,7 @@ function OnPluginInstall()
   PluginManager:AddPlugin("channel_history.xml")
   PluginManager:AddPlugin(UserConfig.Settings.ScreenReaderPlugin..".xml")
   PluginManager:AddPlugin("unitopia/GMCP.xml")
+  PluginManager:AddPlugin("unitopia/umlautNormalizer.xml")
   PluginManager:LoadPlugins(PLUGIN_DIRECTORY)
 
   -- Check if this is the first soundpack start. This is done by checking whether the settings file exists or not.

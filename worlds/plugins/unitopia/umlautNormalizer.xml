@@ -12,17 +12,11 @@
    id="a22a0d12f7c167b8ed125e7b"
    language="Lua"
    purpose="Normalizes umlauts sent by a MUD."
-   save_state="y"
+   save_state="n"
    date_written="2020-08-02 11:06:35"
    requires="5.05"
    version="1.0"
    >
-<description trim="y">
-<![CDATA[
-This plugin replaces all umlauts sent by a MUD with "ae", "oe", "ue" etc. This is necessary as the trigger handler is not capable of reacting to text which contains any of these characters.
-]]>
-</description>
-
 </plugin>
 
 
