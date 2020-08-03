@@ -13,7 +13,7 @@
    language="Lua"
    purpose="UNItopia MUSHclient Soundpack"
    date_written="2020-05-17 15:18:42"
-      save_state="n"
+   save_state="n"
    requires="5.05"
    version="1.0"
    >
@@ -244,6 +244,7 @@ function OnPluginInstall()
   PluginManager:AddPlugin("channel_history.xml")
   PluginManager:AddPlugin(UserConfig.Settings.ScreenReaderPlugin..".xml")
   PluginManager:AddPlugin("unitopia/GMCP.xml")
+  PluginManager:AddPlugin("unitopia/umlautNormalizer.xml")
   PluginManager:LoadPlugins(PLUGIN_DIRECTORY)
 
   -- Check if this is the first soundpack start. This is done by checking whether the settings file exists or not.

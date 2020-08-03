@@ -13,6 +13,7 @@
    language="Lua"
    purpose="Enables Generic MUD Communication Protocol."
    date_written="2020-05-24 09:16:03"
+   save_state="n"
    requires="5.05"
    version="1.0"
    >
