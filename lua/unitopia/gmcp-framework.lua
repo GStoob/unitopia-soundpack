@@ -103,21 +103,22 @@ function GmcpFramework:ParseRawData(data)
 
     if (self.LogOutput) then self:Log(message, content) end
 
-    self:NotifyListeners(message, content)
+    local eventType = message
+
+    self:NotifyListeners(eventType, message, content)
   end
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Retrieves GMCP data by it's identifier. Example: GmcpFramework:GetById("Core.Hello")
 ---------------------------------------------------------------------------------------------------
-function GmcpFramework:GetById(id)
-  local node = self.GmcpData
-
-  for level in string.gmatch(path, "%a+") do
-    if (type(node) ~= "table" or node[id] == nil) then return nil end
-    node = node[id]
+function GmcpFramework:GetById(identifier)
+  for key, value in pairs(self.GmcpData) do
+    if (key == identifier) then
+      return value
+    end
   end
-  return node
+  return nil
 end
 
 function GmcpFramework:EnableLogOutput()

@@ -29,84 +29,6 @@
 <triggers>
   <trigger
   enabled="y"
-  match="*fragt:*"
-  send_to="12"
-  sequence="100"
-  >
-  <send>PlaySound("Com/Say.ogg")</send>
-  </trigger>
-  <trigger
-  enabled="y"
-  match="*spricht zu*"
-  send_to="12"
-  sequence="100"
-  >
-  <send>PlaySound("Com/FriendSpeech.ogg")</send>
-  </trigger>
-  <trigger
-  enabled="y"
-  match="*sagt:*"
-  send_to="12"
-  sequence="100"
-  >
-  <send>PlaySound("Com/Say.ogg")</send>
-  </trigger>
-  <trigger
-  enabled="y"
-  match="*fragt dich:*"
-  send_to="12"
-  sequence="100"
-  >
-  <send>PlaySound("Com/Say.ogg")</send>
-  </trigger>
-  <trigger
-  enabled="y"
-  match="*sagt zu*"
-  send_to="12"
-  sequence="100"
-  >
-  <send>PlaySound("Com/Say.ogg")</send>
-  </trigger>
-  <trigger
-  enabled="y"
-  match="*hinaus in die Lüfte zu tragen.*"
-  omit_from_log="y"
-  omit_from_output="y"
-  sequence="100"
-  >
-  </trigger>
-  <trigger
-  enabled="y"
-  match="*redet zu*"
-  send_to="12"
-  sequence="100"
-  >
-  <send>PlaySound("Com/Speech.ogg")</send>
-  </trigger>
-  <trigger
-  enabled="y"
-  match="*schwirrt heran und*"
-  send_to="12"
-  sequence="100"
-  >
-  <send>PlaySound("Com/Kuscheli.ogg")</send>
-  </trigger>
-  <trigger
-  match="*Gastfreundschaft*"
-  send_to="12"
-  sequence="100"
-  >
-  <send>PlaySound("Com/FriendSpeech.ogg")</send>
-  </trigger>
-  <trigger
-  match="*teilt dir*"
-  send_to="12"
-  sequence="100"
-  >
-  <send>PlaySound("Com/GuildSpeech.ogg")</send>
-  </trigger>
-  <trigger
-  enabled="y"
   match="Auf der Roemerstrasse IV.*"
   omit_from_log="y"
   omit_from_output="y"
@@ -341,8 +263,11 @@ function OnPluginInstall()
   -- (ID, on_success, on_failure)
   PPI.OnLoad(Constants.Plugins.GMCP_PLUGIN_ID, function(gmcp)
     gmcp.Listen("Core.Hello", OnCoreHello)
+    gmcp.Listen("Comm.Say", OnUnitopiaCommunication)
+    gmcp.Listen("Comm.Tell", OnUnitopiaCommunication)
+    gmcp.Listen("Comm.Soul", OnUnitopiaCommunication)
     Gmcp = gmcp
-  end, 
+  end,
   function (error)
     world.Note("Fehler beim initialisieren des GMCP Plugins: "..error)
   end)
@@ -372,7 +297,20 @@ function OnPluginDisconnect()
   PluginManager:UnloadPlugins(PLUGIN_DIRECTORY)
 end
 
-function IsFirstSoundpackStart()
+function OnUnitopiaCommunication(message, rawData)
+  if (message == "Comm.Say") then
+    PlaySound("Comm/Say.ogg")
+  elseif (message == "Comm.Tell") then
+    PlaySound("Comm/Tell.ogg")
+  elseif (message == "Comm.Soul") then
+    local item = Gmcp.GetById(message)
+    if (item) and (string.find(item["player"], "/p/Item/Toy/Kuscheli/obj/kuscheli", 1, true)) then
+      PlaySound("Comm/Kuscheli.ogg")
+    end
+  end
+end
+
+    function IsFirstSoundpackStart()
   if (not Path.exists(CONFIG_FILE_NAME)) then 
     return true 
   end
