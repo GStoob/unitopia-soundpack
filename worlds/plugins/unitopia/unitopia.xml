@@ -29,22 +29,6 @@
 <triggers>
   <trigger
   enabled="y"
-  match="*spricht zu*"
-  send_to="12"
-  sequence="100"
-  >
-  <send>PlaySound("Com/FriendSpeech.ogg")</send>
-  </trigger>
-  <trigger
-  enabled="y"
-  match="*hinaus in die Lüfte zu tragen.*"
-  omit_from_log="y"
-  omit_from_output="y"
-  sequence="100"
-  >
-  </trigger>
-  <trigger
-  enabled="y"
   match="Auf der Roemerstrasse IV.*"
   omit_from_log="y"
   omit_from_output="y"
