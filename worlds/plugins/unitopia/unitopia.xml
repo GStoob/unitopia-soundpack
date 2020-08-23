@@ -311,12 +311,12 @@ function OnUnitopiaCommunication(message, rawData)
   end
 end
 
-    function IsFirstSoundpackStart()
+function IsFirstSoundpackStart()
   if (not Path.exists(CONFIG_FILE_NAME)) then 
     return true 
   end
   return false
-  end
+end
 
 function PlaySound(sound, volume, panning)
   volume = volume or UserConfig.Settings.SoundVolume
