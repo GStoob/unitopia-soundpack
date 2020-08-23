@@ -216,9 +216,8 @@ PPI = require("ppi")
 Path = require("pl.path")
 CONFIG_FILE_NAME = "settings.dat"
 PLUGIN_DIRECTORY = world.GetInfo(60) -- Points to worlds/plugins
-
-CurrentArea = ""
-CurrentMusic = ""
+CurrentDomain = ""
+CurrentRoomName = ""
 
 Audio = AudioSystem()
 PluginManager = PluginManager()
@@ -230,10 +229,10 @@ UserConfig = {}
 UserConfig.Settings = {}
 UserConfig.Settings.ScreenReaderPlugin = "MushReader"
 UserConfig.Settings.SoundVolume = 20
-UserConfig.Settings.AreaVolume = 15
+UserConfig.Settings.AmbienceVolume = 15
 UserConfig.Settings.MusicVolume = 10
 UserConfig.Settings.SoundsMuted = 0
-UserConfig.Settings.AreaMuted = 0
+UserConfig.Settings.AmbienceMuted = 0
 UserConfig.Settings.MusicMuted = 0
 
 function OnPluginInstall()
@@ -267,6 +266,7 @@ function OnPluginInstall()
     gmcp.Listen("Comm.Say", OnUnitopiaCommunication)
     gmcp.Listen("Comm.Tell", OnUnitopiaCommunication)
     gmcp.Listen("Comm.Soul", OnUnitopiaCommunication)
+    gmcp.Listen("Room.Info", OnUnitopiaRoomInfo)
     Gmcp = gmcp
   end,
   function (error)
@@ -311,6 +311,38 @@ function OnUnitopiaCommunication(message, rawData)
   end
 end
 
+function OnUnitopiaRoomInfo(message, rawData)
+  local info = Gmcp.GetById(message)
+  
+  if (info) then
+    local domain, roomName = info["domain"], info["name"]
+
+    if (domain) and (roomName) then
+      SetAmbienceForDomain(domain)
+      SetAmbienceForIndividualRoom(roomName)
+    end
+  end
+end
+
+function SetAmbienceForDomain(domain)
+  domain = string.lower(domain)
+
+  if (CurrentDomain == domain) then return end
+
+  Audio:Stop(CurrentAmbience)
+
+  if (domain == "himmel") then
+    CurrentAmbience = PlayAmbienceLoop("Angel/Flying.ogg")
+  end
+  CurrentDomain = domain
+end
+
+function SetAmbienceForIndividualRoom(roomName)
+  -- TODO: Add ambience loops for individual rooms here.
+  roomName = string.lower(roomName)
+  CurrentRoomName = roomName
+end
+
 function IsFirstSoundpackStart()
   if (not Path.exists(CONFIG_FILE_NAME)) then 
     return true 
@@ -332,29 +364,14 @@ function PlayLoopedSound(sound, volume, panning)
   return Audio:PlayLooped(sound, volume, panning, UserConfig.Settings.SoundMuted)
 end
 
-function PlayAmbienceLoop(areaName, sound, volume)
-  volume = volume or UserConfig.Settings.AreaVolume
+function PlayAmbienceLoop(sound, volume)
+  volume = volume or UserConfig.Settings.AmbienceVolume
 
-  -- TODO: Define a useful logic here to determine the current area for which we should play back the ambience sound
-  -- My idea is to have a list with all the areas defined, through which we can iterate here
-  -- Or perhaps, if we can read this info out using the GMCP protocol we might not even require a table with all the possible areas.
-
-  if (CurrentArea == areaName) then return 0 end  
-
-  CurrentArea = areaName
-  return Audio:PlayAreaAmbience(sound, volume, 0, UserConfig.Settings.AreaMuted)
+  return Audio:PlayAmbience(sound, volume, 0, UserConfig.Settings.AmbienceMuted)
 end
 
-function PlayMusic(areaName, musicFile, volume)
+function PlayMusic(musicFile, volume)
   volume = volume or UserConfig.Settings.MusicVolume
-
-  -- TODO: Define a useful logic here to determine the current area for which we should play back the music
-  -- My idea is to have a list with all the areas defined, through which we can iterate here
-  -- Or perhaps, if we can read this info out using the GMCP protocol we might not even require a table with all the possible areas.
-
-  if (CurrentMusic == areaName) then return 0 end
-
-  CurrentMusic = areaName
   return Audio:PlayMusic(musicFile, volume, 0, UserConfig.Settings.MusicMuted)
 end
 
@@ -374,20 +391,20 @@ function SetSoundVolume(increment)
 end
 
 function SetAmbienceVolume(increment)
-  if (UserConfig.Settings.AreaVolume + increment <= 100) and (UserConfig.Settings.AreaVolume + increment >= 0) then
-    UserConfig.Settings.AreaVolume = UserConfig.Settings.AreaVolume + increment
+  if (UserConfig.Settings.AmbienceVolume + increment <= 100) and (UserConfig.Settings.AmbienceVolume + increment >= 0) then
+    UserConfig.Settings.AmbienceVolume = UserConfig.Settings.AmbienceVolume + increment
     PlaySound("Misc/Switch.ogg")
     world.Note("Lautstaerke fuer Umgebung: "..tostring(UserConfig.Settings.AreaVolume).."%.")
 
     local ambience = Audio:GetCurrentAmbienceSoundHandle()
 
     if (tonumber(ambience) ~= nil) and (Audio:IsPlaying(ambience)) then
-      Audio:SetVolume(UserConfig.Settings.AreaVolume, ambience)
+      Audio:SetVolume(UserConfig.Settings.AmbienceVolume, ambience)
     end
   else
-    if (UserConfig.Settings.AreaVolume + increment > 100) then
+    if (UserConfig.Settings.AmbienceVolume + increment > 100) then
       world.Note("Das Maximum für die Umgebungs-Lautstaerke wurde erreicht.")
-    elseif (UserConfig.Settings.AreaVolume + increment < 0) then
+    elseif (UserConfig.Settings.AmbienceVolume + increment < 0) then
     world.Note("Das Minimum für die Umgebungs-Lautstaerke wurde erreicht.")
     end
     PlaySound("Misc/Error.ogg")
@@ -419,10 +436,10 @@ function ToggleMute()
   local ambience = Audio:GetCurrentAmbienceSoundHandle()
   local music = Audio:GetCurrentMusicSoundHandle()
 
-  if (UserConfig.Settings.SoundsMuted == 0) and (UserConfig.Settings.AreaMuted == 0) and (UserConfig.Settings.MusicMuted == 0) then
+  if (UserConfig.Settings.SoundsMuted == 0) and (UserConfig.Settings.AmbienceMuted == 0) and (UserConfig.Settings.MusicMuted == 0) then
     PlaySound("Misc/Switch.ogg")
     UserConfig.Settings.SoundsMuted = 1
-    UserConfig.Settings.AreaMuted = 1
+    UserConfig.Settings.AmbienceMuted = 1
     UserConfig.Settings.MusicMuted = 1
 
     if (tonumber(ambience) ~= nil) then
@@ -434,7 +451,7 @@ function ToggleMute()
     world.Note("Soundpack komplett stummgeschaltet.")
   else
     UserConfig.Settings.SoundsMuted = 0
-    UserConfig.Settings.AreaMuted = 0
+    UserConfig.Settings.AmbienceMuted = 0
     UserConfig.Settings.MusicMuted = 0
     world.Note("Stummschaltung aufgehoben.")
     PlaySound("Misc/Switch.ogg")

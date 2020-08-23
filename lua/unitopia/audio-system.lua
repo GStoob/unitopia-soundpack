@@ -34,7 +34,7 @@ function AudioSystem:PlayLooped(relativeFilePath, volume, panning, isMuted)
   return self.Audio.play(self.SoundFolder.."/"..relativeFilePath, 1, panning, volume)
 end
 
-function AudioSystem:PlayAreaAmbience(relativeFilePath, volume, panning, isMuted)
+function AudioSystem:PlayAmbience(relativeFilePath, volume, panning, isMuted)
   self.CurrentAmbienceSoundHandle = self:PlayLooped(relativeFilePath, volume, panning, isMuted)
   return self.CurrentAmbienceSoundHandle
 end
@@ -78,7 +78,7 @@ function AudioSystem:FadeOut(soundHandle, durationMilliseconds)
   end
 end
 
-local function AudioSystem:ResetSoundHandle(handle)
+local function ResetSoundHandle(handle)
   if (tonumber(self.CurrentSoundHandle) == tonumber(handle)) then
     self.CurrentSoundHandle = 0
   elseif (tonumber(self.CurrentAmbienceSoundHandle) == tonumber(handle)) then 
