@@ -313,7 +313,7 @@ end
 
 function OnUnitopiaRoomInfo(message, rawData)
   local info = Gmcp.GetById(message)
-  
+
   if (info) then
     local domain, roomName = info["domain"], info["name"]
 

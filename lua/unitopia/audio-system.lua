@@ -78,7 +78,7 @@ function AudioSystem:FadeOut(soundHandle, durationMilliseconds)
   end
 end
 
-local function ResetSoundHandle(handle)
+function AudioSystem:ResetSoundHandle(handle)
   if (tonumber(self.CurrentSoundHandle) == tonumber(handle)) then
     self.CurrentSoundHandle = 0
   elseif (tonumber(self.CurrentAmbienceSoundHandle) == tonumber(handle)) then 
