@@ -6,6 +6,7 @@ Class.AudioSystem()
 
 function AudioSystem:_init()
   self.Audio = nil
+  self.CurrentSoundHandle = 0 -- Holds a reference to the current sound handle being played. 0 = No sound is playing.
   self.CurrentAmbienceSoundHandle = 0 -- Holds a reference to the current ambience sound being played. 0 = no sound is playing.
   self.CurrentMusicSoundHandle = 0 -- Holds a reference to the current background music being played. 0 = no music is playing.
   self.SoundFolder = world.GetInfo(74) -- Points to the MUSHclient/sounds directory
@@ -33,7 +34,7 @@ function AudioSystem:PlayLooped(relativeFilePath, volume, panning, isMuted)
   return self.Audio.play(self.SoundFolder.."/"..relativeFilePath, 1, panning, volume)
 end
 
-function AudioSystem:PlayAreaAmbience(relativeFilePath, volume, panning, isMuted)
+function AudioSystem:PlayAmbience(relativeFilePath, volume, panning, isMuted)
   self.CurrentAmbienceSoundHandle = self:PlayLooped(relativeFilePath, volume, panning, isMuted)
   return self.CurrentAmbienceSoundHandle
 end
@@ -41,6 +42,10 @@ end
 function AudioSystem:PlayMusic(relativeFilePath, volume, panning, isMuted)
   self.CurrentMusicSoundHandle = self:PlayLooped(relativeFilePath, volume, panning, isMuted)
   return self.CurrentMusicSoundHandle
+end
+
+function AudioSystem:GetCurrentSoundHandle()
+  return self.CurrentSoundHandle
 end
 
 function AudioSystem:GetCurrentAmbienceSoundHandle()
@@ -62,10 +67,23 @@ end
 function AudioSystem:Stop(soundHandle)
   if ((tonumber(soundHandle) ~= nil) and (self.Audio.isPlaying(soundHandle) == 1)) then
     self.Audio.stop(soundHandle)
+    self:ResetSoundHandle(soundHandle)
   end
-if (tonumber(self.CurrentAmbienceSoundHandle) == tonumber(soundHandle)) then
-    self.CurrentAmbienceSoundHandle = 0  
-elseif (tonumber(self.CurrentMusicSoundHandle) == tonumber(soundHandle)) then
+end
+
+function AudioSystem:FadeOut(soundHandle, durationMilliseconds)
+  if ((tonumber(soundHandle) ~= nil) and (self.Audio.isPlaying(soundHandle) == 1)) then
+    audio.fadeout(soundHandle, durationMilliseconds)
+    self:ResetSoundHandle(soundHandle)
+  end
+end
+
+local function ResetSoundHandle(handle)
+  if (tonumber(self.CurrentSoundHandle) == tonumber(handle)) then
+    self.CurrentSoundHandle = 0
+  elseif (tonumber(self.CurrentAmbienceSoundHandle) == tonumber(handle)) then 
+    self.CurrentAmbienceSoundHandle = 0
+  elseif (tonumber(self.CurrentMusicSoundHandle) == tonumber(handle)) then
     self.CurrentMusicSoundHandle = 0
   end
 end
