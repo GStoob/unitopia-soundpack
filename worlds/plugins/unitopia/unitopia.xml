@@ -394,7 +394,7 @@ function SetAmbienceVolume(increment)
   if (UserConfig.Settings.AmbienceVolume + increment <= 100) and (UserConfig.Settings.AmbienceVolume + increment >= 0) then
     UserConfig.Settings.AmbienceVolume = UserConfig.Settings.AmbienceVolume + increment
     PlaySound("Misc/Switch.ogg")
-    world.Note("Lautstaerke fuer Umgebung: "..tostring(UserConfig.Settings.AreaVolume).."%.")
+    world.Note("Lautstaerke fuer Umgebung: "..tostring(UserConfig.Settings.AmbienceVolume).."%.")
 
     local ambience = Audio:GetCurrentAmbienceSoundHandle()
 
