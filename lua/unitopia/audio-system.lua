@@ -25,13 +25,15 @@ end
 function AudioSystem:Play(relativeFilePath, volume, panning, isMuted)
   if (isMuted == 1) then return 0 end
 
-  return self.Audio.play(self.SoundFolder.."/"..relativeFilePath, 0, panning, volume)
+  self.CurrentSoundHandle = self.Audio.play(self.SoundFolder.."/"..relativeFilePath, 0, panning, volume)
+  return self.CurrentSoundHandle
 end
 
 function AudioSystem:PlayLooped(relativeFilePath, volume, panning, isMuted)
   if (isMuted == 1) then return 0 end
 
-  return self.Audio.play(self.SoundFolder.."/"..relativeFilePath, 1, panning, volume)
+  self.CurrentSoundHandle = self.Audio.play(self.SoundFolder.."/"..relativeFilePath, 1, panning, volume)
+  return self.CurrentSoundHandle
 end
 
 function AudioSystem:PlayAmbience(relativeFilePath, volume, panning, isMuted)

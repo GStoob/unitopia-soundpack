@@ -215,7 +215,6 @@ require("pl.class")
 PPI = require("ppi")
 Path = require("pl.path")
 CONFIG_FILE_NAME = "settings.dat"
-PLUGIN_DIRECTORY = world.GetInfo(60) -- Points to worlds/plugins
 CurrentDomain = ""
 CurrentRoomName = ""
 
@@ -224,7 +223,8 @@ PluginManager = PluginManager()
 ConfigurationManager = ConfigurationManager()
 Gmcp = nil
 
--- The following are the user specific settings. The tables hold default values, so that a valid settings file can be generated on the first soundpack start
+-- The following are the user specific settings. The tables hold default values, so that a 
+-- valid settings file can be generated on the first soundpack start
 UserConfig = {}
 UserConfig.Settings = {}
 UserConfig.Settings.ScreenReaderPlugin = "MushReader"
@@ -244,7 +244,7 @@ function OnPluginInstall()
   PluginManager:AddPlugin(UserConfig.Settings.ScreenReaderPlugin..".xml")
   PluginManager:AddPlugin("unitopia/GMCP.xml")
   PluginManager:AddPlugin("unitopia/umlautNormalizer.xml")
-  PluginManager:LoadPlugins(PLUGIN_DIRECTORY)
+  PluginManager:LoadPlugins()
 
   -- Check if this is the first soundpack start. This is done by checking whether the settings file exists or not.
   if (IsFirstSoundpackStart()) then
@@ -295,7 +295,7 @@ function OnPluginDisconnect()
   PlaySound("Misc/Exit.ogg")
   ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
   world.Note("Einstellungen gespeichert.")
-  PluginManager:UnloadPlugins(PLUGIN_DIRECTORY)
+  PluginManager:UnloadPlugins()
 end
 
 function OnUnitopiaCommunication(message, rawData)
@@ -384,7 +384,7 @@ function SetSoundVolume(increment)
     if (UserConfig.Settings.SoundVolume + increment > 100) then
       world.Note("Das Maximum fuer die Sound-Lautstaerke wurde erreicht.")
     elseif (UserConfig.Settings.SoundVolume + increment < 0) then
-    world.Note("Das Minimum fuer die Sound-Lautstaerke wurde erreicht.")
+      world.Note("Das Minimum fuer die Sound-Lautstaerke wurde erreicht.")
     end
     PlaySound("Misc/Error.ogg")
   end
@@ -394,7 +394,7 @@ function SetAmbienceVolume(increment)
   if (UserConfig.Settings.AmbienceVolume + increment <= 100) and (UserConfig.Settings.AmbienceVolume + increment >= 0) then
     UserConfig.Settings.AmbienceVolume = UserConfig.Settings.AmbienceVolume + increment
     PlaySound("Misc/Switch.ogg")
-    world.Note("Lautstaerke fuer Umgebung: "..tostring(UserConfig.Settings.AreaVolume).."%.")
+    world.Note("Lautstaerke fuer Umgebung: "..tostring(UserConfig.Settings.AmbienceVolume).."%.")
 
     local ambience = Audio:GetCurrentAmbienceSoundHandle()
 
@@ -405,7 +405,7 @@ function SetAmbienceVolume(increment)
     if (UserConfig.Settings.AmbienceVolume + increment > 100) then
       world.Note("Das Maximum für die Umgebungs-Lautstaerke wurde erreicht.")
     elseif (UserConfig.Settings.AmbienceVolume + increment < 0) then
-    world.Note("Das Minimum für die Umgebungs-Lautstaerke wurde erreicht.")
+      world.Note("Das Minimum für die Umgebungs-Lautstaerke wurde erreicht.")
     end
     PlaySound("Misc/Error.ogg")
   end
@@ -420,13 +420,13 @@ function SetMusicVolume(increment)
     local music = Audio:GetCurrentMusicSoundHandle()
 
     if (tonumber(music) ~= nil) and (Audio:IsPlaying(music)) then
-    Audio:SetVolume(UserConfig.Settings.MusicVolume, music)
+      Audio:SetVolume(UserConfig.Settings.MusicVolume, music)
     end
   else
     if (UserConfig.Settings.MusicVolume + increment > 100) then
       world.Note("Das Maximum fuer die Hintergrundmusik-Lautstaerke wurde erreicht.")
     elseif (UserConfig.Settings.MusicVolume + increment < 0) then
-    world.Note("Das Minimum fuer die Hintergrundmusik-Lautstaerke wurde erreicht.")
+      world.Note("Das Minimum fuer die Hintergrundmusik-Lautstaerke wurde erreicht.")
     end
     PlaySound("Misc/Error.ogg")
   end
@@ -464,7 +464,7 @@ function InitializeHotkeys()
   world.AcceleratorTo("F10", "SetSoundVolume(5)", sendto.script)
   world.AcceleratorTo("ctrl+F9", "SetAmbienceVolume(-5)", sendto.script)
   world.AcceleratorTo("ctrl+F10", "SetAmbienceVolume(5)", sendto.script)
-    world.AcceleratorTo("ctrl+shift+F9", "SetMusicVolume(-5)", sendto.script)
+  world.AcceleratorTo("ctrl+shift+F9", "SetMusicVolume(-5)", sendto.script)
   world.AcceleratorTo("ctrl+shift+F10", "SetMusicVolume(5)", sendto.script)
   world.AcceleratorTo("F11", "ToggleMute()", sendto.script)
 end
