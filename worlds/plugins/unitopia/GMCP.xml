@@ -121,7 +121,7 @@ function OnPluginTelnetRequest (type, data)
       -- Establish handshake
       local handshakeRequest = "Core.Hello " .. json.encode(clientInfo)
       SendGmcpData(handshakeRequest)
-    return true
+      return true
     end  
   end
   return false
@@ -151,7 +151,7 @@ function RegisterModules()
 
   if (IsDebugging) then world.Note("Registering supported GMCP modules...") end
 
-        SendGmcpData(moduleRequest)
+  SendGmcpData(moduleRequest)
 end
 
 function SendGmcpData(data)

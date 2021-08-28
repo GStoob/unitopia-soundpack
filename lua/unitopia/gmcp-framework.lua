@@ -54,7 +54,7 @@ end
 
 ---------------------------------------------------------------------------------------------------
 -- Sends an GMCP packet to the server
--- The data must already be serialized, otherwise it will fail.
+-- The data must already be serialized as JSON, otherwise it will fail.
 -- Example: Core.Hello { "client": "UNItopia WebMUD", "version": "2.0" }
 ---------------------------------------------------------------------------------------------------
 function GmcpFramework:SendGmcpPacket(data)
