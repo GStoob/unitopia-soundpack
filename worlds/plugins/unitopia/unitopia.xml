@@ -235,6 +235,18 @@ UserConfig.Settings.SoundsMuted = 0
 UserConfig.Settings.AmbienceMuted = 0
 UserConfig.Settings.MusicMuted = 0
 
+-- Ambience and back ground music
+CurrentAmbienceBeingPlayed = nil
+CurrentBackgroundMusicBeingPlayed = nil
+
+-- Player's vitals
+CurrentHitpoints = nil
+CurrentSpellpoints = nil
+HitpointsFullAnnounced = true
+SpellpointsFullAnnounced = true
+HitpointsSound = nil
+SpellpointsSound = nil
+
 function OnPluginInstall()
   -- Initialize all required plugins
   PluginManager:AddPlugin("LuaAudio.xml")
@@ -259,7 +271,7 @@ function OnPluginInstall()
   -- Now, initialize the audio output plugin
   Audio:InitializeLuaAudio()
 
-  -- Bootstraps the GMCP plugin once it's loaded
+  -- Bootstrap the GMCP plugin once it's loaded
   -- (ID, on_success, on_failure)
   PPI.OnLoad(Constants.Plugins.GMCP_PLUGIN_ID, function(gmcp)
     gmcp.Listen("Core.Hello", OnCoreHello)
@@ -267,6 +279,7 @@ function OnPluginInstall()
     gmcp.Listen("Comm.Tell", OnUnitopiaCommunication)
     gmcp.Listen("Comm.Soul", OnUnitopiaCommunication)
     gmcp.Listen("Room.Info", OnUnitopiaRoomInfo)
+    gmcp.Listen("Char.Vitals", OnUnitopiaVitals)
     Gmcp = gmcp
   end,
   function (error)
@@ -324,15 +337,70 @@ function OnUnitopiaRoomInfo(message, rawData)
   end
 end
 
+function OnUnitopiaVitals(message, rawData)
+  local vitals = Gmcp.GetById(message)
+
+  if (vitals) then
+    local newHitpoints, maxHitpoints = tonumber(vitals["hp"]), tonumber(vitals["maxhp"])
+    local newSpellpoints, maxSpellpoints = tonumber(vitals["sp"]), tonumber(vitals["maxsp"])
+    PlayHitpoints(newHitpoints, maxHitpoints)
+    CurrentHitpoints = newHitpoints
+    PlaySpellpoints(newSpellpoints, maxSpellpoints)
+    CurrentSpellpoints = newSpellpoints
+  end
+end
+
+function PlayHitpoints(newHitpoints, maxHitpoints)
+  if (CurrentHitpoints == nil) then return end
+
+  Audio:StopIfPlaying(HitpointsSound)
+
+  local percentage = newHitpoints / (maxHitpoints / 100)
+
+  if (newHitpoints > CurrentHitpoints) then
+    HitpointsSound = PlaySound("Player/HpUp.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    HitpointsFullAnnounced = false
+  elseif (newHitpoints < CurrentHitpoints) then
+    HitpointsSound = PlaySound("Player/HpDown.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    HitpointsFullAnnounced = false
+  end
+
+  if (newHitpoints == maxHitpoints) and (HitpointsFullAnnounced == false) then
+    PlaySound("Player/HpFull.ogg")
+    HitpointsFullAnnounced = true
+  end
+end
+
+function PlaySpellpoints(newSpellpoints, maxSpellpoints)
+  if (CurrentSpellpoints == nil) then return end
+
+  Audio:StopIfPlaying(SpellpointsSound)
+
+  local percentage = newSpellpoints / (maxSpellpoints / 100)
+
+  if (newSpellpoints > CurrentSpellpoints) then
+    SpellpointsSound = PlaySound("Player/SpUp.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    SpellpointsFullAnnounced = false
+  elseif (newSpellpoints < CurrentSpellpoints) then
+    SpellpointsSound = PlaySound("Player/SpDown.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    SpellpointsFullAnnounced = false
+  end
+
+  if (newSpellpoints == maxSpellpoints) and (SpellpointsFullAnnounced == false) then
+    PlaySound("Player/SpFull.ogg")
+    SpellpointsFullAnnounced = true
+  end
+end
+
 function SetAmbienceForDomain(domain)
   domain = string.lower(domain)
 
   if (CurrentDomain == domain) then return end
 
-  Audio:Stop(CurrentAmbience)
+  Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
 
   if (domain == "himmel") then
-    CurrentAmbience = PlayAmbienceLoop("Angel/Flying.ogg")
+    CurrentAmbienceBeingPlayed = PlayAmbienceLoop("Angel/Flying.ogg")
   end
   CurrentDomain = domain
 end
@@ -367,12 +435,12 @@ end
 function PlayAmbienceLoop(sound, volume)
   volume = volume or UserConfig.Settings.AmbienceVolume
 
-  return Audio:PlayAmbience(sound, volume, 0, UserConfig.Settings.AmbienceMuted)
+  return Audio:PlayLooped(sound, volume, 0, UserConfig.Settings.AmbienceMuted)
 end
 
 function PlayMusic(musicFile, volume)
   volume = volume or UserConfig.Settings.MusicVolume
-  return Audio:PlayMusic(musicFile, volume, 0, UserConfig.Settings.MusicMuted)
+  return Audio:PlayLooped(musicFile, volume, 0, UserConfig.Settings.MusicMuted)
 end
 
 function SetSoundVolume(increment)
@@ -395,11 +463,9 @@ function SetAmbienceVolume(increment)
     UserConfig.Settings.AmbienceVolume = UserConfig.Settings.AmbienceVolume + increment
     PlaySound("Misc/Switch.ogg")
     world.Note("Lautstaerke fuer Umgebung: "..tostring(UserConfig.Settings.AmbienceVolume).."%.")
-
-    local ambience = Audio:GetCurrentAmbienceSoundHandle()
-
-    if (tonumber(ambience) ~= nil) and (Audio:IsPlaying(ambience)) then
-      Audio:SetVolume(UserConfig.Settings.AmbienceVolume, ambience)
+    
+    if (tonumber(CurrentAmbienceBeingPlayed) ~= nil) and (Audio:IsPlaying(CurrentAmbienceBeingPlayed)) then
+      Audio:SetVolume(UserConfig.Settings.AmbienceVolume, CurrentAmbienceBeingPlayed)
     end
   else
     if (UserConfig.Settings.AmbienceVolume + increment > 100) then
@@ -416,11 +482,9 @@ function SetMusicVolume(increment)
     UserConfig.Settings.MusicVolume = UserConfig.Settings.MusicVolume + increment
     PlaySound("Misc/Switch.ogg")
     world.Note("Lautstaerke fuer Hintergrundmusik: "..tostring(UserConfig.Settings.MusicVolume).."%.")
-
-    local music = Audio:GetCurrentMusicSoundHandle()
-
-    if (tonumber(music) ~= nil) and (Audio:IsPlaying(music)) then
-      Audio:SetVolume(UserConfig.Settings.MusicVolume, music)
+    
+    if (tonumber(CurrentBackgroundMusicBeingPlayed) ~= nil) and (Audio:IsPlaying(CurrentBackgroundMusicBeingPlayed)) then
+      Audio:SetVolume(UserConfig.Settings.MusicVolume, CurrentBackgroundMusicBeingPlayed)
     end
   else
     if (UserConfig.Settings.MusicVolume + increment > 100) then
@@ -433,21 +497,14 @@ function SetMusicVolume(increment)
 end
 
 function ToggleMute()
-  local ambience = Audio:GetCurrentAmbienceSoundHandle()
-  local music = Audio:GetCurrentMusicSoundHandle()
-
   if (UserConfig.Settings.SoundsMuted == 0) and (UserConfig.Settings.AmbienceMuted == 0) and (UserConfig.Settings.MusicMuted == 0) then
     PlaySound("Misc/Switch.ogg")
     UserConfig.Settings.SoundsMuted = 1
     UserConfig.Settings.AmbienceMuted = 1
     UserConfig.Settings.MusicMuted = 1
-
-    if (tonumber(ambience) ~= nil) then
-      Audio:Stop(ambience)
-    end
-    if (tonumber(music) ~= nil) then
-      Audio:Stop(music)
-    end
+    
+    Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
+    Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
     world.Note("Soundpack komplett stummgeschaltet.")
   else
     UserConfig.Settings.SoundsMuted = 0
