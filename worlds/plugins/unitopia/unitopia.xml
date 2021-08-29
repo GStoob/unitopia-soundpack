@@ -163,7 +163,6 @@
   omit_from_output="y"
   sequence="100"
   >
-  <send>PlaySound("Misc/Reg.ogg")</send>
   </trigger>
   <trigger
   enabled="y"
@@ -173,7 +172,6 @@
   omit_from_output="y"
   sequence="100"
   >
-  <send>PlaySound("Misc/Reg.ogg")</send>
   </trigger>
   <trigger
   enabled="y"
@@ -183,7 +181,6 @@
   omit_from_output="y"
   sequence="100"
   >
-  <send>PlaySound("Misc/Reg.ogg")</send>
   </trigger>
   <trigger
   enabled="y"
@@ -193,7 +190,6 @@
   omit_from_output="y"
   sequence="100"
   >
-  <send>PlaySound("Misc/Reg.ogg")</send>
   </trigger>
 
 </triggers>
