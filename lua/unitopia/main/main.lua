@@ -253,4 +253,5 @@ function SwitchScreenReaderOutputPlugin()
 
   PluginManager:LoadPlugin(UserConfig.Settings.ScreenReaderPlugin .. ".xml")
   PlaySound("misc/switch.ogg")
+  world.Note("Ausgabesystem geaendert.")
 end
