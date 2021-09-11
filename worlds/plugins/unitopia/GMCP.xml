@@ -41,12 +41,12 @@
     send_to="12"
   >
   <send>
-    if (GmcpFramework:IsLogOutputEnabled()) then
+    if GmcpFramework:IsLogOutputEnabled() then
       GmcpFramework:DisableLogOutput()
     else
       GmcpFramework:EnableLogOutput()
     end
-    if (IsDebugging) then
+    if IsDebugging then
       IsDebugging = false
       world.Note("Debugging disabled")
     else
@@ -72,7 +72,7 @@
   >
   <send>
     local wildcards = '%1'
-    if (IsDebugging) then world.Note("Sending GMCP request...") end
+    if IsDebugging then world.Note("Sending GMCP request...") end
     SendGmcpData(wildcards)
   </send>
   </alias>
@@ -81,11 +81,10 @@
 <!--  Script  -->
 
 <script>
-require("unitopia.gmcp-framework")
 require("json")
 Constants = require("unitopia.constants")
 PPI = require("ppi")
-GmcpFramework = GmcpFramework()
+GmcpFramework = require("unitopia.gmcp_framework")()
 IsDebugging = false
 
 SupportedGmcpModules = {
@@ -110,12 +109,12 @@ function OnPluginInstall()
 end
 
 function OnPluginTelnetRequest (type, data)
-  if (type == Constants.GmcpProtocolNegotiation.GMCP) then
-    if (data == "DO") then
+  if type == Constants.GmcpProtocolNegotiation.GMCP then
+    if data == "DO" then
       return true
-    elseif (data == "WILL") then
+    elseif data == "WILL" then
       return true
-    elseif (data == "SEND_DO") then
+    elseif data == "SEND_DO" then
       local clientInfo = { client = "MUSHclient", version = world.Version() }
 
       -- Establish handshake
@@ -128,11 +127,11 @@ function OnPluginTelnetRequest (type, data)
 end
 
 function OnPluginTelnetSubnegotiation(type, data)
-  if (type ~= Constants.GmcpProtocolNegotiation.GMCP) then
+  if type ~= Constants.GmcpProtocolNegotiation.GMCP then
     return
   end
 
-  if (IsDebugging) then
+  if IsDebugging then
     world.Note("OnPluginTelnetSubnegotiation: Received GMCP data...")
   end
   GmcpFramework:ParseRawData(data)
@@ -149,7 +148,7 @@ end
 function RegisterModules()
   local moduleRequest = "Core.Supports.Set " .. json.encode(SupportedGmcpModules)
 
-  if (IsDebugging) then world.Note("Registering supported GMCP modules...") end
+  if IsDebugging then world.Note("Registering supported GMCP modules...") end
 
   SendGmcpData(moduleRequest)
 end
