@@ -40,8 +40,6 @@ function OnPluginConnect()
   PluginManager:UnloadPlugins({"unitopia/umlautnormalizer.xml", UserConfig.Settings.ScreenReaderPlugin .. ".xml"})
   -- Load plugins, default ones first
   PluginManager:LoadDefaultPlugins()
-  -- Now the screen reader plugin
-  PluginManager:LoadPlugin(UserConfig.Settings.ScreenReaderPlugin .. ".xml")
 
   -- Check if this is the first soundpack start. This is done by checking whether the settings file exists or not.
   if IsFirstSoundpackStart() then
@@ -55,7 +53,9 @@ function OnPluginConnect()
     world.Note("Einstellungen geladen.")
   end
 
-  -- Now, initialize the audio output plugin
+  -- Now, load the screen reader plugin
+  PluginManager:LoadPlugin(UserConfig.Settings.ScreenReaderPlugin .. ".xml")
+  -- Initialize the audio output plugin
   Audio:InitializeLuaAudio()
 
   -- Bootstrap the GMCP plugin once it's loaded
@@ -224,6 +224,9 @@ function InitializeHotkeys()
   world.AcceleratorTo("ctrl+shift+F9", "SetMusicVolume(-5)", sendto.script)
   world.AcceleratorTo("ctrl+shift+F10", "SetMusicVolume(5)", sendto.script)
   world.AcceleratorTo("F11", "ToggleMute()", sendto.script)
+
+  -- Screen Reader output plugin
+  world.AcceleratorTo("ctrl+F12", "SwitchScreenReaderOutputPlugin()", sendto.script)
 end
 
 function InitializeNumPad()
@@ -237,4 +240,17 @@ function InitializeNumPad()
   world.AcceleratorTo("Numpad9", 'world.Execute("no")', sendto.script)
   world.Accelerator("Add", "r")
   world.Accelerator("Subtract", "h")
+end
+
+function SwitchScreenReaderOutputPlugin()
+  PluginManager:UnloadPlugin(UserConfig.Settings.ScreenReaderPlugin)
+
+  if UserConfig.Settings.ScreenReaderPlugin == "MushReader" then
+    UserConfig.Settings.ScreenReaderPlugin = "tts_jfw"
+  else
+    UserConfig.Settings.ScreenReaderPlugin = "MushReader"
+  end
+
+  PluginManager:LoadPlugin(UserConfig.Settings.ScreenReaderPlugin .. ".xml")
+  PlaySound("misc/switch.ogg")
 end
