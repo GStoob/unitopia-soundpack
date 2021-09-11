@@ -1,3 +1,5 @@
+require("unitopia.main.playback")
+
 Audio = require("unitopia.audiosystem")()
 ConfigurationManager = require("unitopia.configurationmanager")()
 PluginManager = require("unitopia.pluginmanager")()
@@ -9,7 +11,7 @@ CurrentRoomName = ""
 
 Gmcp = nil
 
--- The following are the user specific settings. The tables hold default values, so that a 
+-- The following are the user specific settings. The tables hold default values, so that a
 -- valid settings file can be generated on the first soundpack start
 UserConfig = {}
 UserConfig.Settings = {}
@@ -35,15 +37,17 @@ SpellpointsSound = nil
 
 function OnPluginConnect()
   -- Clear plugin list to prevent the plugins from being in an invalid state
-  PluginManager:UnloadPlugins({ "unitopia/umlautnormalizer.xml", UserConfig.Settings.ScreenReaderPlugin..".xml" })
+  PluginManager:UnloadPlugins({"unitopia/umlautnormalizer.xml", UserConfig.Settings.ScreenReaderPlugin .. ".xml"})
   -- Load plugins, default ones first
   PluginManager:LoadDefaultPlugins()
   -- Now the screen reader plugin
-  PluginManager:LoadPlugin(UserConfig.Settings.ScreenReaderPlugin..".xml")
+  PluginManager:LoadPlugin(UserConfig.Settings.ScreenReaderPlugin .. ".xml")
 
   -- Check if this is the first soundpack start. This is done by checking whether the settings file exists or not.
   if IsFirstSoundpackStart() then
-    world.Note("Anscheinend wird das Soundpack zum ersten mal gestartet. Generiere benutzerspezivische Einstellungsdatei...")
+    world.Note(
+      "Anscheinend wird das Soundpack zum ersten mal gestartet. Generiere benutzerspezivische Einstellungsdatei..."
+    )
     ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
     world.Note("Einstellungsdatei generiert. Viel Spass mit dem UNItopia Soundpack!")
   else
@@ -56,18 +60,21 @@ function OnPluginConnect()
 
   -- Bootstrap the GMCP plugin once it's loaded
   -- (ID, on_success, on_failure)
-  PPI.OnLoad(Constants.Plugins.GMCP_PLUGIN_ID, function(gmcp)
-    gmcp.Listen("Core.Hello", OnCoreHello)
-    gmcp.Listen("Comm.Say", OnUnitopiaCommunication)
-    gmcp.Listen("Comm.Tell", OnUnitopiaCommunication)
-    gmcp.Listen("Comm.Soul", OnUnitopiaCommunication)
-    gmcp.Listen("Room.Info", OnUnitopiaRoomInfo)
-    gmcp.Listen("Char.Vitals", OnUnitopiaVitals)
-    Gmcp = gmcp
-  end,
-  function (error)
-    world.Note("Fehler beim initialisieren des GMCP Plugins: "..error)
-  end)
+  PPI.OnLoad(
+    Constants.Plugins.GMCP_PLUGIN_ID,
+    function(gmcp)
+      gmcp.Listen("Core.Hello", OnCoreHello)
+      gmcp.Listen("Comm.Say", OnUnitopiaCommunication)
+      gmcp.Listen("Comm.Tell", OnUnitopiaCommunication)
+      gmcp.Listen("Comm.Soul", OnUnitopiaCommunication)
+      gmcp.Listen("Room.Info", OnUnitopiaRoomInfo)
+      gmcp.Listen("Char.Vitals", OnUnitopiaVitals)
+      Gmcp = gmcp
+    end,
+    function(error)
+      world.Note("An unexpected error occurred when loading the GMCP plugin: " .. error)
+    end
+  )
 
   PlaySound("Misc/SoundpackStart.ogg")
   InitializeHotkeys()
@@ -92,7 +99,7 @@ end
 function OnPluginDisconnect()
   PlaySound("Misc/Exit.ogg")
   ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
-  world.Note("Einstellungen gespeichert.")
+  world.Note("Benutzereinstellungen gespeichert.")
 end
 
 function OnUnitopiaCommunication(message, rawData)
@@ -135,7 +142,9 @@ function OnUnitopiaVitals(message, rawData)
 end
 
 function PlayHitpoints(newHitpoints, maxHitpoints)
-  if CurrentHitpoints == nil then return end
+  if CurrentHitpoints == nil then
+    return
+  end
 
   Audio:StopIfPlaying(HitpointsSound)
 
@@ -156,7 +165,9 @@ function PlayHitpoints(newHitpoints, maxHitpoints)
 end
 
 function PlaySpellpoints(newSpellpoints, maxSpellpoints)
-  if CurrentSpellpoints == nil then return end
+  if CurrentSpellpoints == nil then
+    return
+  end
 
   Audio:StopIfPlaying(SpellpointsSound)
 
@@ -179,7 +190,9 @@ end
 function SetAmbienceForDomain(domain)
   domain = string.lower(domain)
 
-  if CurrentDomain == domain then return end
+  if CurrentDomain == domain then
+    return
+  end
 
   Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
 
@@ -196,107 +209,10 @@ function SetAmbienceForIndividualRoom(roomName)
 end
 
 function IsFirstSoundpackStart()
-  if not Path.exists(CONFIG_FILE_NAME) then 
-    return true 
+  if not Path.exists(CONFIG_FILE_NAME) then
+    return true
   end
   return false
-end
-
-function PlaySound(sound, volume, panning)
-  volume = volume or UserConfig.Settings.SoundVolume
-  panning = panning or 0
-
-  return Audio:Play(sound, volume, panning, UserConfig.Settings.SoundsMuted)
-end
-
-function PlayLoopedSound(sound, volume, panning)
-  volume = volume or UserConfig.Settings.SoundVolume
-  panning = panning or 0
-
-  return Audio:PlayLooped(sound, volume, panning, UserConfig.Settings.SoundMuted)
-end
-
-function PlayAmbienceLoop(sound, volume)
-  volume = volume or UserConfig.Settings.AmbienceVolume
-
-  return Audio:PlayLooped(sound, volume, 0, UserConfig.Settings.AmbienceMuted)
-end
-
-function PlayMusic(musicFile, volume)
-  volume = volume or UserConfig.Settings.MusicVolume
-  return Audio:PlayLooped(musicFile, volume, 0, UserConfig.Settings.MusicMuted)
-end
-
-function SetSoundVolume(increment)
-  if UserConfig.Settings.SoundVolume + increment <= 100 and UserConfig.Settings.SoundVolume + increment >= 0 then
-    UserConfig.Settings.SoundVolume = UserConfig.Settings.SoundVolume + increment
-    PlaySound("Misc/Switch.ogg")
-    world.Note("Lautstaerke fuer Sounds: "..tostring(UserConfig.Settings.SoundVolume).."%.")
-  else
-    if UserConfig.Settings.SoundVolume + increment > 100 then
-      world.Note("Das Maximum fuer die Sound-Lautstaerke wurde erreicht.")
-    elseif UserConfig.Settings.SoundVolume + increment < 0 then
-      world.Note("Das Minimum fuer die Sound-Lautstaerke wurde erreicht.")
-    end
-    PlaySound("Misc/Error.ogg")
-  end
-end
-
-function SetAmbienceVolume(increment)
-  if UserConfig.Settings.AmbienceVolume + increment <= 100 and UserConfig.Settings.AmbienceVolume + increment >= 0 then
-    UserConfig.Settings.AmbienceVolume = UserConfig.Settings.AmbienceVolume + increment
-    PlaySound("Misc/Switch.ogg")
-    world.Note("Lautstaerke fuer Umgebung: "..tostring(UserConfig.Settings.AmbienceVolume).."%.")
-    
-    if tonumber(CurrentAmbienceBeingPlayed) ~= nil and Audio:IsPlaying(CurrentAmbienceBeingPlayed) then
-      Audio:SetVolume(UserConfig.Settings.AmbienceVolume, CurrentAmbienceBeingPlayed)
-    end
-  else
-    if UserConfig.Settings.AmbienceVolume + increment > 100 then
-      world.Note("Das Maximum für die Umgebungs-Lautstaerke wurde erreicht.")
-    elseif UserConfig.Settings.AmbienceVolume + increment < 0 then
-      world.Note("Das Minimum für die Umgebungs-Lautstaerke wurde erreicht.")
-    end
-    PlaySound("Misc/Error.ogg")
-  end
-end
-
-function SetMusicVolume(increment)
-  if UserConfig.Settings.MusicVolume + increment <= 100 and UserConfig.Settings.MusicVolume + increment >= 0 then
-    UserConfig.Settings.MusicVolume = UserConfig.Settings.MusicVolume + increment
-    PlaySound("Misc/Switch.ogg")
-    world.Note("Lautstaerke fuer Hintergrundmusik: "..tostring(UserConfig.Settings.MusicVolume).."%.")
-    
-    if tonumber(CurrentBackgroundMusicBeingPlayed) ~= nil and Audio:IsPlaying(CurrentBackgroundMusicBeingPlayed) then
-      Audio:SetVolume(UserConfig.Settings.MusicVolume, CurrentBackgroundMusicBeingPlayed)
-    end
-  else
-    if UserConfig.Settings.MusicVolume + increment > 100 then
-      world.Note("Das Maximum fuer die Hintergrundmusik-Lautstaerke wurde erreicht.")
-    elseif UserConfig.Settings.MusicVolume + increment < 0 then
-      world.Note("Das Minimum fuer die Hintergrundmusik-Lautstaerke wurde erreicht.")
-    end
-    PlaySound("Misc/Error.ogg")
-  end
-end
-
-function ToggleMute()
-  if UserConfig.Settings.SoundsMuted == 0 and UserConfig.Settings.AmbienceMuted == 0 and UserConfig.Settings.MusicMuted == 0 then
-    PlaySound("Misc/Switch.ogg")
-    UserConfig.Settings.SoundsMuted = 1
-    UserConfig.Settings.AmbienceMuted = 1
-    UserConfig.Settings.MusicMuted = 1
-    
-    Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
-    Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
-    world.Note("Soundpack komplett stummgeschaltet.")
-  else
-    UserConfig.Settings.SoundsMuted = 0
-    UserConfig.Settings.AmbienceMuted = 0
-    UserConfig.Settings.MusicMuted = 0
-    world.Note("Stummschaltung aufgehoben.")
-    PlaySound("Misc/Switch.ogg")
-  end
 end
 
 function InitializeHotkeys()
@@ -311,14 +227,14 @@ function InitializeHotkeys()
 end
 
 function InitializeNumPad()
-  world.Accelerator('Numpad1', 'sw')
-  world.Accelerator('Numpad2', 's')
-  world.Accelerator('Numpad3', 'so')
-  world.Accelerator('Numpad4', 'w')
-  world.Accelerator('Numpad6', 'o')
-  world.Accelerator('Numpad7', 'nw')
-  world.Accelerator('Numpad8', 'n')
-  world.AcceleratorTo('Numpad9','world.Execute("no")', sendto.script)
-  world.Accelerator('Add', 'r')
-  world.Accelerator('Subtract', 'h')
+  world.Accelerator("Numpad1", "sw")
+  world.Accelerator("Numpad2", "s")
+  world.Accelerator("Numpad3", "so")
+  world.Accelerator("Numpad4", "w")
+  world.Accelerator("Numpad6", "o")
+  world.Accelerator("Numpad7", "nw")
+  world.Accelerator("Numpad8", "n")
+  world.AcceleratorTo("Numpad9", 'world.Execute("no")', sendto.script)
+  world.Accelerator("Add", "r")
+  world.Accelerator("Subtract", "h")
 end

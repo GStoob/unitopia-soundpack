@@ -8,9 +8,9 @@ function ConfigurationManager:LoadUserConfig(configFileName)
 
   local userConfig = {}
   local configTable = assert(configFile.read(configFileName))
-  
+
   for name, section in pairs(configTable) do
-    for optionName, optionValue in pairs (section) do
+    for optionName, optionValue in pairs(section) do
       local config = nil
       config = tonumber(optionValue)
 
@@ -28,7 +28,7 @@ end
 
 function ConfigurationManager:SaveUserConfig(configFileName)
   assert(configFileName, "Value of configFileName must not be nil")
-  ConfigFile.write(configFileName, UserConfig)
+  configFile.write(configFileName, UserConfig)
 end
 
 return ConfigurationManager
