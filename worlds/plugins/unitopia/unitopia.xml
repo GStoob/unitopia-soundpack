@@ -243,16 +243,13 @@ SpellpointsFullAnnounced = true
 HitpointsSound = nil
 SpellpointsSound = nil
 
-function OnPluginInstall()
-  -- Initialize all required plugins
-  PluginManager:AddPlugin("LuaAudio.xml")
-  PluginManager:AddPlugin("output_functions.xml")
-  PluginManager:AddPlugin("omit_blank_lines.xml")
-  PluginManager:AddPlugin("channel_history.xml")
-  PluginManager:AddPlugin(UserConfig.Settings.ScreenReaderPlugin..".xml")
-  PluginManager:AddPlugin("unitopia/GMCP.xml")
-  PluginManager:AddPlugin("unitopia/umlautNormalizer.xml")
-  PluginManager:LoadPlugins()
+function OnPluginConnect()
+  -- Clear plugin list to prevent the plugins from being in an invalid state
+  PluginManager:UnloadPlugins({ "unitopia/umlautnormalizer.xml", UserConfig.Settings.ScreenReaderPlugin..".xml" })
+  -- Load plugins, default ones first
+  PluginManager:LoadDefaultPlugins()
+  -- Now the screen reader plugin
+  PluginManager:LoadPlugin(UserConfig.Settings.ScreenReaderPlugin..".xml")
 
   -- Check if this is the first soundpack start. This is done by checking whether the settings file exists or not.
   if (IsFirstSoundpackStart()) then
@@ -281,6 +278,10 @@ function OnPluginInstall()
   function (error)
     world.Note("Fehler beim initialisieren des GMCP Plugins: "..error)
   end)
+
+  PlaySound("Misc/SoundpackStart.ogg")
+  InitializeHotkeys()
+  InitializeNumPad()
 end
 
 function OnPluginListChanged()
@@ -292,19 +293,16 @@ function OnCoreHello(message, data)
   -- Now, register all the GMCP modules that UNItopia supports
   -- We can do this only after the handshake has been established
   Gmcp.RegisterModules()
-end
 
-function OnPluginConnect()
-  PlaySound("Misc/SoundpackStart.ogg")
-  InitializeHotkeys()
-  InitializeNumPad()
+  -- Also load the Umlaut normalizer plugin after we logged in to UNItopia.
+  -- It causes weird behaviour when loading directly on startup of MUSHclient
+  PluginManager:LoadPlugin("unitopia/umlautnormalizer.xml")
 end
 
 function OnPluginDisconnect()
   PlaySound("Misc/Exit.ogg")
   ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
   world.Note("Einstellungen gespeichert.")
-  PluginManager:UnloadPlugins()
 end
 
 function OnUnitopiaCommunication(message, rawData)
