@@ -1,10 +1,10 @@
 require("json")
 require("tprint")
-Class = require("pl.class")
-Constants = require("unitopia.constants")
-Tablex = require("pl.tablex")
+local class = require("pl.class")
+local constants = require("unitopia.constants")
+local tablex = require("pl.tablex")
 
-Class.GmcpFramework()
+class.GmcpFramework()
 
 function GmcpFramework:_init()
   self.LogOutput = false
@@ -18,11 +18,11 @@ function GmcpFramework:_init()
 end
 
 function GmcpFramework:AddListener(event, callback)
-  if (not self.Callbacks[event]) then
+  if not self.Callbacks[event] then
     self.Callbacks[event] = {}
   end
 
-  if (Tablex.find(self.Callbacks[event],callback) ~=nil) then
+  if tablex.find(self.Callbacks[event],callback) ~= nil then
     return false
   end
   self.Callbacks[event][#(self.Callbacks[event])+1]=callback
@@ -30,14 +30,14 @@ function GmcpFramework:AddListener(event, callback)
 end
 
 function GmcpFramework:RemoveListener(event, callback)
-  if (self.Callbacks[event] == nil) then
+  if self.Callbacks[event] == nil then
     return false
   end
 
-  local index = Tablex.find(self.Callbacks[event], callback)
+  local index = tablex.find(self.Callbacks[event], callback)
 
-  if (index ~= nil) then
-    self.Callbacks[event]=Tablex.removevalues(self.Callbacks[event],index,index)
+  if index ~= nil then
+    self.Callbacks[event] = tablex.removevalues(self.Callbacks[event],index,index)
     return true
   end
 
@@ -45,7 +45,7 @@ function GmcpFramework:RemoveListener(event, callback)
 end
 
 function GmcpFramework:NotifyListeners(event, ...)
-  if (self.Callbacks[event] ~= nil) then
+  if self.Callbacks[event] ~= nil then
     for _, callbackFunction in pairs(self.Callbacks[event]) do
       callbackFunction(unpack({ select(1, ...) }))
     end
@@ -54,23 +54,24 @@ end
 
 ---------------------------------------------------------------------------------------------------
 -- Sends an GMCP packet to the server
--- The data must already be serialized as JSON, otherwise it will fail.
--- Example: Core.Hello { "client": "UNItopia WebMUD", "version": "2.0" }
+-- Requires the payload to be serialized as JSON, otherwise it will fail.
+-- Example: 
+-- Core.Hello { "client": "UNItopia WebMUD", "version": "2.0" }
 ---------------------------------------------------------------------------------------------------
 function GmcpFramework:SendGmcpPacket(data)
   assert(data, "Value of data must not be nil")
 
   -- Create a valid GMCP packet that can be sent to the server
-  local interPretAsCommand = Constants.GmcpProtocolNegotiation.IAC
-  local subNegotiationStart = Constants.GmcpProtocolNegotiation.SB
-  local subNegotiationEnd = Constants.GmcpProtocolNegotiation.SE
+  local interPretAsCommand = constants.GmcpProtocolNegotiation.IAC
+  local subNegotiationStart = constants.GmcpProtocolNegotiation.SB
+  local subNegotiationEnd = constants.GmcpProtocolNegotiation.SE
   local gmcp = Constants.GmcpProtocolNegotiation.GMCP
 
   local packet = string.char(interPretAsCommand, subNegotiationStart, gmcp)..
-  (string.gsub(data, "\255", "\255\255")) ..  -- IAC becomes IAC IAC
-  string.char(interPretAsCommand, subNegotiationEnd)
+      (string.gsub(data, "\255", "\255\255")) ..  -- IAC becomes IAC IAC
+      string.char(interPretAsCommand, subNegotiationEnd)
 
-  if (self.LogOutput) then world.Note("Sending serialized GMCP data to the server... "..data) end
+  if self.LogOutput then world.Note("Sending serialized GMCP data to the server... "..data) end
 
   world.SendPkt(packet)
 end
@@ -86,7 +87,7 @@ function GmcpFramework:ParseRawData(data)
     local rawDataTable = utils.split(data, " ", 1)
     message, content = rawDataTable[1], rawDataTable[2]
 
-    if (content:len() == 0) then
+    if content:len() == 0 then
       content = nil
     else
       -- Not every JSON parser allows any top-level value to be valid.
@@ -94,14 +95,14 @@ function GmcpFramework:ParseRawData(data)
       -- an array makes this code parser-agnostic.
       content = json.decode("["..content.."]")
 
-      if (content ~= nil) then
+      if content ~= nil then
         content = content[1]
       end
     end
 
     self.GmcpData[message] = content
 
-    if (self.LogOutput) then self:Log(message, content) end
+    if self.LogOutput then self:Log(message, content) end
 
     local eventType = message
 
@@ -110,11 +111,11 @@ function GmcpFramework:ParseRawData(data)
 end
 
 ---------------------------------------------------------------------------------------------------
--- Retrieves GMCP data by it's identifier. Example: GmcpFramework:GetById("Core.Hello")
+-- Retrieves GMCP data by its message identifier. Example: GmcpFramework:GetById("Core.Hello")
 ---------------------------------------------------------------------------------------------------
 function GmcpFramework:GetById(identifier)
   for key, value in pairs(self.GmcpData) do
-    if (key == identifier) then
+    if key == identifier then
       return value
     end
   end
@@ -134,7 +135,7 @@ function GmcpFramework:IsLogOutputEnabled() return self.LogOutput end
 function GmcpFramework:Log(message, content)
   world.Note(message)
 
-  if (type(content) == "table") then
+  if type(content) == "table" then
     tprint(content)
   else
     world.Note(content)

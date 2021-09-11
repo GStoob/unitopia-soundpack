@@ -1,8 +1,8 @@
-Class = require("pl.class")
-PPI = require("ppi")
-Constants = require("unitopia.constants")
+local class = require("pl.class")
+local ppi = require("ppi")
+local constants = require("unitopia.constants")
 
-Class.AudioSystem()
+class.AudioSystem()
 
 function AudioSystem:_init()
   self.Audio = nil
@@ -10,23 +10,23 @@ function AudioSystem:_init()
 end
 
 function AudioSystem:InitializeLuaAudio()
-  local audio = PPI.Load(Constants.Plugins.AUDIO_PLUGIN_ID)
+  local audio = ppi.Load(constants.Plugins.AUDIO_PLUGIN_ID)
 
-  if (not audio) then
-    error("Ein unerwarteter Fehler ist aufgetreten. Das Audiosystem konnte nicht initialisiert werden.")
+  if not audio then
+    error("An unexpected error has occurred. Failed to initialize the audio system")
     return
   end
   self.Audio = audio
 end
 
 function AudioSystem:Play(relativeFilePath, volume, panning, isMuted)
-  if (isMuted == 1) then return 0 end
+  if isMuted == 1 then return 0 end
 
   return self.Audio.play(self.SoundFolder.."/"..relativeFilePath, 0, panning, volume)
 end
 
 function AudioSystem:PlayLooped(relativeFilePath, volume, panning, isMuted)
-  if (isMuted == 1) then return 0 end
+  if isMuted == 1 then return 0 end
 
   return self.Audio.play(self.SoundFolder.."/"..relativeFilePath, 1, panning, volume)
 end
@@ -41,11 +41,11 @@ function AudioSystem:IsPlaying(soundHandle)
 end
 
 function AudioSystem:StopIfPlaying(soundHandle)
-  if (soundHandle == nil) then return end
+  if soundHandle == nil then return end
   
   soundHandle = tonumber(soundHandle)
   
-  if (self:IsPlaying(soundHandle)) then
+  if self:IsPlaying(soundHandle) then
     self:Stop(soundHandle)
   end
 end
@@ -55,7 +55,7 @@ function AudioSystem:Stop(soundHandle)
 end
 
 function AudioSystem:FadeOut(soundHandle, durationMilliseconds)
-  if (self:IsPlaying(soundHandle)) then
+  if self:IsPlaying(soundHandle) then
     audio.fadeout(soundHandle, durationMilliseconds)
   end
 end
