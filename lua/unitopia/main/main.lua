@@ -1,10 +1,11 @@
 require("unitopia.main.playback")
-
 Audio = require("unitopia.audiosystem")()
+AreaHandler = require("unitopia.areahandler")
 ConfigurationManager = require("unitopia.configurationmanager")()
 PluginManager = require("unitopia.pluginmanager")()
 PPI = require("ppi")
 Path = require("pl.path")
+
 CONFIG_FILE_NAME = "settings.dat"
 CurrentDomain = ""
 CurrentRoomName = ""
@@ -50,7 +51,7 @@ function OnPluginConnect()
     world.Note("Einstellungsdatei generiert. Viel Spass mit dem UNItopia Soundpack!")
   else
     UserConfig = ConfigurationManager:LoadUserConfig(CONFIG_FILE_NAME)
-    world.Note("Einstellungen geladen.")
+    world.Note("Benutzereinstellungen geladen.")
   end
 
   -- Now, load the screen reader plugin
@@ -128,6 +129,40 @@ function OnUnitopiaRoomInfo(message, rawData)
   end
 end
 
+function OnUnitopiaRoomInfo2(message, rawData)
+  local info = Gmcp.GetById(message)
+
+  if info then
+    local domain, room = info["domain"], info["name"]
+
+    if room then
+      -- Individual rooms take precedence over the city or domain
+      if CurrentRoomName == room then
+        return
+      end
+
+      local area = AreaHandler.FindArea(room)
+
+      if area then
+        SetAmbienceAndBackgroundMusic(area)
+      end
+    elseif domain then
+      if CurrentDomain == domain then
+        return
+      end
+      local area = AreaHandler.FindArea(domain)
+
+      if area then
+        SetAmbienceAndBackgroundMusic(area)
+      end
+    else
+      -- When no match, then just stop ambience and background music
+      Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
+      Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
+    end
+  end
+end
+
 function OnUnitopiaVitals(message, rawData)
   local vitals = Gmcp.GetById(message)
 
@@ -188,18 +223,24 @@ function PlaySpellpoints(newSpellpoints, maxSpellpoints)
 end
 
 function SetAmbienceForDomain(domain)
-  domain = string.lower(domain)
-
-  if CurrentDomain == domain then
-    return
-  end
-
-  Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
-
+  domain = domain:lower()
   if domain == "himmel" then
     CurrentAmbienceBeingPlayed = PlayAmbienceLoop("Angel/Flying.ogg")
   end
   CurrentDomain = domain
+end
+
+function SetAmbienceAndBackgroundMusic(area)
+  Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
+  Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
+
+  if area.Ambience ~= "" then
+    CurrentAmbienceBeingPlayed = PlayAmbienceLoop(area.Ambience)
+  end
+
+  if area.Music ~= "" then
+    CurrentBackgroundMusicBeingPlayed = PlayMusic(area.Music)
+  end
 end
 
 function SetAmbienceForIndividualRoom(roomName)
