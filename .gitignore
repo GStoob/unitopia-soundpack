@@ -3,3 +3,4 @@ sound.log
 settings.dat
 .vscode/
 worlds/plugins/state
+worlds/plugins/state*.xml
