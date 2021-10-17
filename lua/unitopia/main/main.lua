@@ -7,8 +7,7 @@ PPI = require("ppi")
 Path = require("pl.path")
 
 CONFIG_FILE_NAME = "settings.dat"
-CurrentDomain = ""
-CurrentRoomName = ""
+CurrentArea = ""
 
 Gmcp = nil
 
@@ -58,6 +57,8 @@ function OnPluginConnect()
   PluginManager:LoadPlugin(UserConfig.Settings.ScreenReaderPlugin .. ".xml")
   -- Initialize the audio output plugin
   Audio:InitializeLuaAudio()
+  -- Load areas
+  AreaHandler.LoadFromJson(world.GetInfo(67))
 
   -- Bootstrap the GMCP plugin once it's loaded
   -- (ID, on_success, on_failure)
@@ -88,7 +89,7 @@ function OnPluginListChanged()
 end
 
 function OnCoreHello(message, data)
-  -- Now, register all the GMCP modules that UNItopia supports
+  -- Register all the GMCP modules that UNItopia supports
   -- We can do this only after the handshake has been established
   Gmcp.RegisterModules()
 
@@ -120,42 +121,39 @@ function OnUnitopiaRoomInfo(message, rawData)
   local info = Gmcp.GetById(message)
 
   if info then
-    local domain, roomName = info["domain"], info["name"]
-
-    if domain and roomName then
-      SetAmbienceForDomain(domain)
-      SetAmbienceForIndividualRoom(roomName)
-    end
-  end
-end
-
-function OnUnitopiaRoomInfo2(message, rawData)
-  local info = Gmcp.GetById(message)
-
-  if info then
     local domain, room = info["domain"], info["name"]
+    local matchingArea = nil
 
     if room then
       -- Individual rooms take precedence over the city or domain
-      if CurrentRoomName == room then
+      room = room:lower()
+
+      if CurrentArea == room then
         return
       end
 
-      local area = AreaHandler.FindArea(room)
+      matchingArea = AreaHandler.FindArea(room)
 
-      if area then
-        SetAmbienceAndBackgroundMusic(area)
+      if matchingArea then
+        SetAmbienceAndBackgroundMusic(matchingArea)
+        CurrentArea = matchingArea.Name
       end
-    elseif domain then
-      if CurrentDomain == domain then
+    if domain then
+      domain = domain:lower()
+
+      if CurrentArea == domain then
         return
       end
-      local area = AreaHandler.FindArea(domain)
 
-      if area then
-        SetAmbienceAndBackgroundMusic(area)
+      if matchingArea == nil then
+        matchingArea = AreaHandler.FindArea(domain)
+
+        if matchingArea then
+          SetAmbienceAndBackgroundMusic(matchingArea)
+          CurrentArea = matchingArea.Name
+        end
       end
-    else
+    if matchingArea == nil then
       -- When no match, then just stop ambience and background music
       Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
       Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
@@ -222,14 +220,6 @@ function PlaySpellpoints(newSpellpoints, maxSpellpoints)
   end
 end
 
-function SetAmbienceForDomain(domain)
-  domain = domain:lower()
-  if domain == "himmel" then
-    CurrentAmbienceBeingPlayed = PlayAmbienceLoop("Angel/Flying.ogg")
-  end
-  CurrentDomain = domain
-end
-
 function SetAmbienceAndBackgroundMusic(area)
   Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
   Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
@@ -241,12 +231,6 @@ function SetAmbienceAndBackgroundMusic(area)
   if area.Music ~= "" then
     CurrentBackgroundMusicBeingPlayed = PlayMusic(area.Music)
   end
-end
-
-function SetAmbienceForIndividualRoom(roomName)
-  -- TODO: Add ambience loops for individual rooms here.
-  roomName = string.lower(roomName)
-  CurrentRoomName = roomName
 end
 
 function IsFirstSoundpackStart()

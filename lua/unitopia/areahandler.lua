@@ -13,16 +13,20 @@ end
 local areas = {}
 
 local loadFromJson = function(basePath)
-  if not path.exists(basePath) then
+  assert(basePath, "Value of basePath must not be nil!")
+
+  local areasFilePath = path.join(basePath, "areas.json")
+
+  if not path.exists(areasFilePath) then
     error("Path ".. basePath .. " does not exist.")
   end
 
-  local jsonData = json.decode(file.read(path.join(basePath, "areas.json")))
+  local jsonData = json.decode(file.read(areasFilePath))
 
   -- Compose the table which holds the areas
   for _, areaData in pairs(jsonData) do
     local area = Area(areaData.name, areaData.ambience, areaData.music)
-    areas[areaData.name] = area
+    areas[area.Name] = area
   end 
 end
 
