@@ -138,6 +138,7 @@ function OnUnitopiaRoomInfo(message, rawData)
         SetAmbienceAndBackgroundMusic(matchingArea)
         CurrentArea = matchingArea.Name
       end
+    end
     if domain then
       domain = domain:lower()
 
@@ -153,10 +154,12 @@ function OnUnitopiaRoomInfo(message, rawData)
           CurrentArea = matchingArea.Name
         end
       end
+    end
     if matchingArea == nil then
       -- When no match, then just stop ambience and background music
       Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
       Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
+      CurrentArea = nil
     end
   end
 end
