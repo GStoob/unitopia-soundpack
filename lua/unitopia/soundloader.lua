@@ -25,7 +25,7 @@ function Trigger:_init(matchText, responseText, sendTo, sequence, group, isRegex
 end
 
 function Trigger:Inject()
-  local success = world.AddTriggerEx(self.Name, self.MatchText, self.ResponseText, self.TriggerFlags, custom_colour.NoChange, 0, "", "", self.sendTo, self.sequence)
+  local success = world.AddTriggerEx(self.Name, self.MatchText, self.ResponseText, self.TriggerFlags, custom_colour.NoChange, 0, "", "", self.SendTo, self.Sequence)
 
   if success ~= error_code.eOK then
     error("Error when creating trigger for text '"..self.matchText.."': error code "..tostring(success))
@@ -41,13 +41,13 @@ class.SoundLoader()
 
 function SoundLoader:_init()
   self.SoundTriggers = {}
-  self.SoundTriggersPath = path.join(world.GetInfo(67), "sounds.json"))
+  self.SoundTriggersPath = path.join(world.GetInfo(67), "sounds.json")
 end
 
 function SoundLoader:LoadFromFile()
   self:Unload()
 
-  world.Note("Lade Sounds...")
+  world.Note("Lade Sound Trigger...")
 
   if not path.exists(self.SoundTriggersPath) then
     error("The JSON file holding the sound triggers is missing! Cannot continue.")
@@ -55,36 +55,39 @@ function SoundLoader:LoadFromFile()
   end
 
   local soundsLoadedCount = 0
-  local triggerData = json.decode(file.read(self.SoundTriggersPath))
+  local jsonData = json.decode(file.read(self.SoundTriggersPath))
+  assert(jsonData, "jsonData must not be nil!")
 
-  for i, triggger in pairs(triggerData) do
-    local t = Trigger(triggerData.matchText, triggerData.responseText, triggerData.sendto, triggerData.sequence, triggerData.isRegexp, triggerData.omitFromOutput)
+  for _, triggerData in pairs(jsonData) do
+    local t = Trigger(triggerData.matchText, triggerData.responseText, triggerData.sendto, triggerData.sequence, triggerData.group, triggerData.isRegexp, triggerData.omitFromOutput)
     t:Inject()
     table.insert(self.SoundTriggers, t)
     soundsLoadedCount = soundsLoadedCount + 1
   end
 
-  world.Note("Es wurden "..soundsLoadedCount.." Sounds in den Speicher geladen.")
+  world.Note("Es wurden "..soundsLoadedCount.." Sound Trigger in den Speicher geladen.")
 end
 
 function SoundLoader:Unload()
-  if #self.triggers == 0 then
+  if #self.SoundTriggers == 0 then
     return
   end
 
   local soundsUnloadedCount = 0
 
-  world.Note("Entferne Sounds aus dem Speicher")
+  world.Note("Entferne Sound Trigger aus dem Speicher")
 
   for i, trigger in pairs(self.SoundTriggers) do
     trigger:Delete()
     soundsUnloadedCount = soundsUnloadedCount + 1
   end
 
-  world.Note("Es wurden "..soundsUnloadedCount.." Sounds aus dem Speicher entfernt.")
+  world.Note("Es wurden "..soundsUnloadedCount.." Sound Trigger aus dem Speicher entfernt.")
 end
 
 function SoundLoader:Reload()
   self:Unload()
   self:LoadFromFile()
 end
+
+return SoundLoader
