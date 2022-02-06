@@ -17,6 +17,7 @@ function PluginManager:InitDefaultPluginList()
   self.DefaultPlugins:append("omit_blank_lines.xml")
   self.DefaultPlugins:append("channel_history.xml")
   self.DefaultPlugins:append("unitopia/GMCP.xml")
+  self.DefaultPlugins:append("unitopia/SoundCollector.xml")
 end
 
 function PluginManager:LoadPlugin(plugin)
