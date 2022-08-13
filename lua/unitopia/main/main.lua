@@ -3,6 +3,7 @@ Audio = require("unitopia.audiosystem")()
 AreaHandler = require("unitopia.areahandler")
 ConfigurationManager = require("unitopia.configurationmanager")()
 PluginManager = require("unitopia.pluginmanager")()
+SoundLoader = require("unitopia.soundloader")()
 PPI = require("ppi")
 Path = require("pl.path")
 
@@ -60,6 +61,9 @@ function OnPluginConnect()
   -- Load areas
   AreaHandler.LoadFromJson(world.GetInfo(67))
 
+  -- Load the sound triggers
+  SoundLoader:Reload()
+  
   -- Bootstrap the GMCP plugin once it's loaded
   -- (ID, on_success, on_failure)
   PPI.OnLoad(
@@ -102,6 +106,7 @@ function OnPluginDisconnect()
   PlaySound("Misc/Exit.ogg")
   ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
   world.Note("Benutzereinstellungen gespeichert.")
+  SoundLoader:Unload()
 end
 
 function OnUnitopiaCommunication(message, rawData)
