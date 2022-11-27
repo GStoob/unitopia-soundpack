@@ -47,6 +47,7 @@
    edit_script_with_notepad="y"
    enable_aliases="y"
    enable_beeps="y"
+   enable_command_stack="y"
    enable_scripts="y"
    enable_timers="y"
    enable_triggers="y"

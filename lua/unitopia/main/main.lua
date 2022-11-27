@@ -6,6 +6,7 @@ PluginManager = require("unitopia.pluginmanager")()
 SoundLoader = require("unitopia.soundloader")()
 PPI = require("ppi")
 Path = require("pl.path")
+UmlautNormalizer = require("unitopia.umlautnormalizer")()
 
 CONFIG_FILE_NAME = "settings.dat"
 CurrentArea = ""
@@ -110,16 +111,23 @@ function OnPluginDisconnect()
 end
 
 function OnUnitopiaCommunication(message, rawData)
+  channel = "UNBEKANNT"
   if message == "Comm.Say" then
     PlaySound("Comm/Say.ogg")
+    channel = "SAGEN"
   elseif message == "Comm.Tell" then
     PlaySound("Comm/Tell.ogg")
+    channel = "REDEN"
   elseif message == "Comm.Soul" then
     local item = Gmcp.GetById(message)
-    if item and string.find(item["player"], "/p/Item/Toy/Kuscheli/obj/kuscheli", 1, true) then
+    if item and string.find(item["player"], "kuscheli", 1, true) then
       PlaySound("Comm/Kuscheli.ogg")
+      channel = "KUSCHELI"
+    else
+      channel = "SEELE"
     end
   end
+  world.Execute(";history_add "..channel.."="..UmlautNormalizer:Normalize(world.Replace(rawData.text, "\n", " ")))
 end
 
 function OnUnitopiaRoomInfo(message, rawData)
