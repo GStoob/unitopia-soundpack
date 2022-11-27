@@ -129,7 +129,7 @@ function OnUnitopiaRoomInfo(message, rawData)
     local domain, room = info["domain"], info["name"]
     local matchingArea = nil
 
-    if room then
+    if room and room ~= 0 then
       -- Individual rooms take precedence over the city or domain
       room = room:lower()
 
