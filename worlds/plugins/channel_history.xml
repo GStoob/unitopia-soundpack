@@ -128,6 +128,7 @@ keep_evaluating="y"
 
 <script>
 <![CDATA[
+local ppi = require "ppi"
 modes = {} -- for keyboard states
 messages = {}
 current_category = nil -- not set yet
@@ -221,9 +222,11 @@ end
 function ttstoggle(n,l,w)
 SetVariable("tts",GetPluginVariable("553a883096da345ce6897740","tts"))
 end
-function history_add(name, line, wc)
+function history_add(cat, msg, wc)
 -- wc[1] is category, wc[2] is text
-local cat, msg = wc[1], wc[2]
+if wc ~= nil then
+cat, msg = wc[1], wc[2]
+end
 if messages[cat] == nil then
 messages[cat] = {}
 -- add the category to the categories table
@@ -349,6 +352,7 @@ current_category = categories[idx]
 say(categories[idx])
 end
 
+ppi.Expose("HistoryAdd", history_add)
 ]]>
 </script>
 </muclient>
