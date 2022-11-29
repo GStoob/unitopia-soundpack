@@ -127,7 +127,7 @@ function OnUnitopiaCommunication(message, rawData)
       channel = "SEELE"
     end
   end
-  world.Execute(";history_add "..channel.."="..UmlautNormalizer:Normalize(world.Replace(rawData.text, "\n", " ")))
+  world.Execute("history_add "..channel.."="..UmlautNormalizer:Normalize(world.Replace(rawData.text, "\n", " ")))
 end
 
 function OnUnitopiaRoomInfo(message, rawData)
