@@ -1,7 +1,6 @@
 require("unitopia.main.playback")
 Audio = require("unitopia.audiosystem")()
 AreaHandler = require("unitopia.areahandler")
-ChannelHistory = nil
 ConfigurationManager = require("unitopia.configurationmanager")()
 PluginManager = require("unitopia.pluginmanager")()
 SoundLoader = require("unitopia.soundloader")()
@@ -58,11 +57,6 @@ function OnPluginConnect()
 
   -- Now, load the screen reader plugin
   PluginManager:LoadPlugin(UserConfig.Settings.ScreenReaderPlugin .. ".xml")
-  -- Load channel_history plugin
-  ChannelHistory = PPI.Load(Constants.Plugins.CHANNELHISTORY_PLUGIN_ID)
-  if not ChannelHistory then
-    error("An unexpected error has occurred. Failed to initialize channel history")
-  end
   -- Initialize the audio output plugin
   Audio:InitializeLuaAudio()
   -- Load areas
@@ -133,7 +127,7 @@ function OnUnitopiaCommunication(message, rawData)
       channel = "SEELE"
     end
   end
-  ChannelHistory.HistoryAdd(channel, UmlautNormalizer:Normalize(world.Replace(rawData.text, "\n", " ")))
+  world.Execute(";history_add "..channel.."="..UmlautNormalizer:Normalize(world.Replace(rawData.text, "\n", " ")))
 end
 
 function OnUnitopiaRoomInfo(message, rawData)
