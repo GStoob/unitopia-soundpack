@@ -26,27 +26,10 @@
 
 <script>
 <![CDATA[
-Conversions = {}
-Conversions["Ã¤"] = "ae"
-Conversions["Ã¼"] = "ue"
-Conversions["Ã¶"] = "oe"
-Conversions["Ã„"] = "Ae"
-Conversions["Ã–"] = "Oe"
-Conversions["Ãœ"] = "Ue"
-Conversions["ÃŸ"] = "ss"
-Conversions["ä"] = "ae"
-Conversions["ö"] = "oe"
-Conversions["ü"] = "ue"
-Conversions["Ä"] = "Ae"
-Conversions["Ö"] = "Oe"
-Conversions["Ü"] = "Ue"
-Conversions["ß"] = "ss"
+UmlautNormalizer = require("unitopia.umlautnormalizer")()
 
 function OnPluginPacketReceived(incoming)
-  for char in pairs(Conversions) do
-    incoming = string.gsub(incoming, char, Conversions[char])
-  end
-  return incoming
+  return UmlautNormalizer:Normalize(incoming)
 end
 ]]>
 </script>
