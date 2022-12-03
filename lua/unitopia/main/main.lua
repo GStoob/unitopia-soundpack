@@ -134,7 +134,7 @@ function OnUnitopiaRoomInfo(message, rawData)
   local info = Gmcp.GetById(message)
 
   if info then
-    local domain, room = info["domain"], info["name"]
+    local domain, room = UmlautNormalizer:Normalize(info["domain"]), UmlautNormalizer:Normalize(info["name"])
     local matchingArea = nil
 
     if room and room ~= 0 then
