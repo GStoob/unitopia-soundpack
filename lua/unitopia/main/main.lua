@@ -101,6 +101,8 @@ function OnCoreHello(message, data)
   -- Also load the Umlaut normalizer plugin after we logged in to UNItopia.
   -- It causes weird behaviour when loading directly on startup of MUSHclient
   PluginManager:LoadPlugin("unitopia/umlautnormalizer.xml")
+  -- Since we have turned the option no_echo_off on, manually clear the command history to remove login credentials
+  world.DeleteCommandHistory()
 end
 
 function OnPluginDisconnect()
