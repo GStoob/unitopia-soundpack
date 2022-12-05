@@ -2,11 +2,56 @@
   {
     "name": "Du fliegst",
     "ambience": "Angel/Flying.ogg",
-    "music": ""
+    "music": "Music/Himmel.ogg"
   },
   {
     "name": "Ozean",
     "ambience": "Ambience/Ocean.ogg",
     "music": ""
+  },
+  {
+    "name": "Campus",
+    "ambience": "",
+    "music": "Music/Campus.ogg"
+  },
+  {
+    "name": "Doerrland",
+    "ambience": "",
+    "music": "Music/Doerrland.ogg"
+  },
+  {
+    "name": "Ebenen",
+    "ambience": "",
+    "music": "Music/Ebenen.ogg"
+  },
+  {
+    "name": "Gallien",
+    "ambience": "",
+    "music": "Music/Gallien.ogg"
+  },
+  {
+    "name": "Kokosinseln",
+    "ambience": "",
+    "music": "Music/Kokosinseln.ogg"
+  },
+  {
+    "name": "Maerchenland",
+    "ambience": "",
+    "music": "Music/Maerchenland.ogg"
+  },
+  {
+    "name": "Midgard",
+    "ambience": "",
+    "music": "Music/Midgard.ogg"
+  },
+  {
+    "name": "Nordische Inseln",
+    "ambience": "",
+    "music": "Music/Nordische Inseln.ogg"
+  },
+  {
+    "name": "Vaniorh",
+    "ambience": "",
+    "music": "Music/Vaniorh.ogg"
   }
 ]
