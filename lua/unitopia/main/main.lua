@@ -34,8 +34,6 @@ CurrentHitpoints = nil
 CurrentSpellpoints = nil
 HitpointsFullAnnounced = true
 SpellpointsFullAnnounced = true
-HitpointsSound = nil
-SpellpointsSound = nil
 
 function OnPluginConnect()
   -- Clear plugin list to prevent the plugins from being in an invalid state
@@ -197,15 +195,13 @@ function PlayHitpoints(newHitpoints, maxHitpoints)
     return
   end
 
-  Audio:StopIfPlaying(HitpointsSound)
-
   local percentage = newHitpoints / (maxHitpoints / 100)
 
   if newHitpoints > CurrentHitpoints then
-    HitpointsSound = PlaySound("Player/HpUp.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    PlaySound("Player/HpUp.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
     HitpointsFullAnnounced = false
   elseif newHitpoints < CurrentHitpoints then
-    HitpointsSound = PlaySound("Player/HpDown.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    PlaySound("Player/HpDown.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
     HitpointsFullAnnounced = false
   end
 
@@ -220,15 +216,13 @@ function PlaySpellpoints(newSpellpoints, maxSpellpoints)
     return
   end
 
-  Audio:StopIfPlaying(SpellpointsSound)
-
   local percentage = newSpellpoints / (maxSpellpoints / 100)
 
   if newSpellpoints > CurrentSpellpoints then
-    SpellpointsSound = PlaySound("Player/SpUp.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    PlaySound("Player/SpUp.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
     SpellpointsFullAnnounced = false
   elseif newSpellpoints < CurrentSpellpoints then
-    SpellpointsSound = PlaySound("Player/SpDown.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    PlaySound("Player/SpDown.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
     SpellpointsFullAnnounced = false
   end
 
