@@ -271,12 +271,15 @@ function InitializeNumPad()
   world.Accelerator("Numpad2", "s")
   world.Accelerator("Numpad3", "so")
   world.Accelerator("Numpad4", "w")
+  world.Accelerator("Numpad5", "betrachte")
   world.Accelerator("Numpad6", "o")
   world.Accelerator("Numpad7", "nw")
   world.Accelerator("Numpad8", "n")
   world.AcceleratorTo("Numpad9", 'world.Execute("no")', sendto.script)
   world.Accelerator("Add", "r")
   world.Accelerator("Subtract", "h")
+  world.AcceleratorTo("Divide", "SpeakCurrentHitpoints()", sendto.script)
+  world.AcceleratorTo("Multiply", "SpeakCurrentSpellpoints()", sendto.script)
 end
 
 function SwitchScreenReaderOutputPlugin()
@@ -291,4 +294,18 @@ function SwitchScreenReaderOutputPlugin()
   PluginManager:LoadPlugin(UserConfig.Settings.ScreenReaderPlugin .. ".xml")
   PlaySound("misc/switch.ogg")
   world.Note("Ausgabesystem geaendert.")
+end
+
+function SpeakCurrentHitpoints()
+  if CurrentHitpoints == nil then
+    return
+  end
+  world.Execute("tts_interrupt "..CurrentHitpoints.." AP")
+end
+
+function SpeakCurrentSpellpoints()
+  if CurrentSpellpoints == nil then
+    return
+  end
+  world.Execute("tts_interrupt "..CurrentSpellpoints.." ZP")
 end
