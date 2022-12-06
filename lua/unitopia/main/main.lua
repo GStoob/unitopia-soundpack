@@ -35,6 +35,9 @@ CurrentSpellpoints = nil
 HitpointsFullAnnounced = true
 SpellpointsFullAnnounced = true
 
+-- Player's stats
+CurrentStats = {}
+
 function OnPluginConnect()
   -- Clear plugin list to prevent the plugins from being in an invalid state
   PluginManager:UnloadPlugins({"unitopia/umlautnormalizer.xml", UserConfig.Settings.ScreenReaderPlugin .. ".xml"})
@@ -74,6 +77,7 @@ function OnPluginConnect()
       gmcp.Listen("Comm.Soul", OnUnitopiaCommunication)
       gmcp.Listen("Room.Info", OnUnitopiaRoomInfo)
       gmcp.Listen("Char.Vitals", OnUnitopiaVitals)
+      gmcp.Listen("Char.Stats", OnUnitopiaStats)
       Gmcp = gmcp
     end,
     function(error)
@@ -187,6 +191,37 @@ function OnUnitopiaVitals(message, rawData)
     CurrentHitpoints = newHitpoints
     PlaySpellpoints(newSpellpoints, maxSpellpoints)
     CurrentSpellpoints = newSpellpoints
+  end
+end
+
+function OnUnitopiaStats(message, rawData)
+  local difference, statDown, statName, statUp
+  for key, value in pairs(rawData) do
+    rawData[key] = tonumber(world.Replace(value, ",", "."))
+    if CurrentStats[key] ~= nil and CurrentStats[key] ~= rawData[key] then
+      difference = rawData[key] - CurrentStats[key]
+      -- Round the difference to 2 decimal places
+      difference = tonumber(string.format(" %.2f", difference))
+      if difference > 0 then
+        difference = "+" .. difference
+        statUp = true
+      else
+        statDown = true
+      end
+      difference = world.Replace(difference, ".", ",")
+      statName = Constants.StatNames[key]
+      if statName == nil then
+        statName = "Unbekannt"
+      end
+      world.Note(statName .. ": " .. value .. ", " .. difference)
+    end
+  end
+  CurrentStats = rawData
+  if statDown then
+    PlaySound("Player/StatDown.ogg")
+  end
+  if statUp then
+    PlaySound("Player/StatUp.ogg")
   end
 end
 

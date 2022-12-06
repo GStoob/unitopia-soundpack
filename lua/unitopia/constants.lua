@@ -10,6 +10,13 @@ Constants = {
     SE = 0xF0, -- End of subnegotiation
     IAC  = 0xFF, -- Interpret As Command
     GMCP = 201 -- GMCP sequence, required to identify incoming and outgoing GMCP packets successfully
+  },
+  -- Maps Char.Stats received via GMCP to German names
+  StatNames = {
+    int = "Intelligenz",
+    str = "Staerke",
+    dex = "Geschicklichkeit",
+    con = "Ausdauer"
   }
 }
 
