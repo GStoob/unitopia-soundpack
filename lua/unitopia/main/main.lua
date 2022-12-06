@@ -38,6 +38,9 @@ SpellpointsFullAnnounced = true
 -- Player's stats
 CurrentStats = {}
 
+-- Player's progress
+CurrentProgress = nil
+
 function OnPluginConnect()
   -- Clear plugin list to prevent the plugins from being in an invalid state
   PluginManager:UnloadPlugins({"unitopia/umlautnormalizer.xml", UserConfig.Settings.ScreenReaderPlugin .. ".xml"})
@@ -223,6 +226,20 @@ function OnUnitopiaStats(message, rawData)
   if statUp then
     PlaySound("Player/StatUp.ogg")
   end
+end
+
+function OnUnitopiaProgress(progress)
+  local difference
+  progress = world.Replace(progress, ",", ".")
+  progress = world.Replace(progress, "%", "")
+  progress = tonumber(progress)
+  if CurrentProgress ~= nil and progress > CurrentProgress then
+    difference = math.abs(CurrentProgress - progress)
+    difference = "+" .. world.Replace(difference, ".", ",") .. "%"
+    world.Note("Gratulation! " .. difference)
+    PlaySound("Player/ProgressUp.ogg")
+  end
+  CurrentProgress = progress
 end
 
 function PlayHitpoints(newHitpoints, maxHitpoints)
