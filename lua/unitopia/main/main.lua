@@ -111,6 +111,8 @@ function OnCoreHello(message, data)
 end
 
 function OnPluginDisconnect()
+  Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
+  Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
   PlaySound("Misc/Exit.ogg")
   ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
   world.Note("Benutzereinstellungen gespeichert.")
