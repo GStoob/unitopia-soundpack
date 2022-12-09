@@ -3,6 +3,7 @@ Audio = require("unitopia.audiosystem")()
 AreaHandler = require("unitopia.areahandler")
 ConfigurationManager = require("unitopia.configurationmanager")()
 PluginManager = require("unitopia.pluginmanager")()
+SoundIndex = require("unitopia.soundindex")()
 SoundLoader = require("unitopia.soundloader")()
 PPI = require("ppi")
 Path = require("pl.path")
@@ -81,6 +82,8 @@ function OnPluginConnect()
       gmcp.Listen("Room.Info", OnUnitopiaRoomInfo)
       gmcp.Listen("Char.Vitals", OnUnitopiaVitals)
       gmcp.Listen("Char.Stats", OnUnitopiaStats)
+      gmcp.Listen("Char.Items.Add", OnUnitopiaItems)
+      gmcp.Listen("Char.Items.Remove", OnUnitopiaItems)
       Gmcp = gmcp
     end,
     function(error)
@@ -242,6 +245,35 @@ function OnUnitopiaProgress(progress)
     PlaySound("Player/ProgressUp.ogg")
   end
   CurrentProgress = progress
+end
+
+function OnUnitopiaItems(message, rawData)
+  local type
+  if message == "Char.Items.Add" then
+    type = "ItemAdd"
+  elseif message == "Char.Items.Remove" then
+    type = "ItemRemove"
+  else
+    return
+  end
+  if rawData["location"] == nil or rawData["location"] ~= "inv" then
+    return
+  end
+  local item = rawData["item"]
+  if item == nil then
+    return
+  end
+  if item["category"] == nil then
+    return
+  end
+  local itemCategory = Constants.ItemCategories[item["category"]]
+  if itemCategory == nil then
+    return
+  end
+  local sound = SoundIndex:Random(type .. "\\" .. itemCategory)
+  if sound ~= nil then
+    PlaySound(sound)
+  end
 end
 
 function PlayHitpoints(newHitpoints, maxHitpoints)

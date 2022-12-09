@@ -39,7 +39,7 @@ function SoundIndex:Random(path)
   if value == nil then
     return nil
   end
-  return constants.SoundFolder .. path .. "\\" .. value[math.random(1, value[0])]
+  return path .. "\\" .. value[math.random(1, value[0])]
 end
 
 return SoundIndex

@@ -19,7 +19,18 @@ Constants = {
     con = "Ausdauer"
   },
   -- Sound folder (points to the MUSHclient/sounds directory)
-  SoundFolder = world.GetInfo(74)
+  SoundFolder = world.GetInfo(74),
+  -- Maps German item categories to sound folder names
+  ItemCategories = {
+    Behaelter = "Container",
+    Geld = "Money",
+    Kleidung = "Clothes",
+    Lebendiges = "Living",
+    Nahrung = "Food",
+    Ruestungen = "Armor",
+    Sonstiges = "Other",
+    Waffen = "Weapons"
+  }
 }
 
 return Constants
