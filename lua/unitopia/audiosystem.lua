@@ -6,7 +6,6 @@ class.AudioSystem()
 
 function AudioSystem:_init()
   self.Audio = nil
-  self.SoundFolder = world.GetInfo(74) -- Points to the MUSHclient/sounds directory
 end
 
 function AudioSystem:InitializeLuaAudio()
@@ -22,13 +21,13 @@ end
 function AudioSystem:Play(relativeFilePath, volume, panning, isMuted)
   if isMuted == 1 then return 0 end
 
-  return self.Audio.play(self.SoundFolder.."/"..relativeFilePath, 0, panning, volume)
+  return self.Audio.play(constants.SoundFolder.."/"..relativeFilePath, 0, panning, volume)
 end
 
 function AudioSystem:PlayLooped(relativeFilePath, volume, panning, isMuted)
   if isMuted == 1 then return 0 end
 
-  return self.Audio.play(self.SoundFolder.."/"..relativeFilePath, 1, panning, volume)
+  return self.Audio.play(constants.SoundFolder.."/"..relativeFilePath, 1, panning, volume)
 end
 
 function AudioSystem:SetVolume(volume, soundHandle)

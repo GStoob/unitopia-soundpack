@@ -17,7 +17,9 @@ Constants = {
     str = "Staerke",
     dex = "Geschicklichkeit",
     con = "Ausdauer"
-  }
+  },
+  -- Sound folder (points to the MUSHclient/sounds directory)
+  SoundFolder = world.GetInfo(74)
 }
 
 return Constants
