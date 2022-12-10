@@ -29,7 +29,8 @@ Constants = {
     Nahrung = "Food",
     Ruestungen = "Armor",
     Sonstiges = "Other",
-    Waffen = "Weapons"
+    Waffen = "Weapons",
+    Wertvolles = "Valuable"
   }
 }
 
