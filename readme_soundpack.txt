@@ -44,6 +44,8 @@ Alt+Pfeil rechts: Zum nächsten Kanal wechseln
 
 Credits ===
 
+Musik ===
+
 Nachfolgend eine Liste der Musikstücke, die im Soundpack verwendet werden:
 
 "Cambodian Odyssey",
@@ -59,3 +61,22 @@ Nachfolgend eine Liste der Musikstücke, die im Soundpack verwendet werden:
 Kevin MacLeod (incompetech.com)
 Licensed under Creative Commons: By Attribution 3.0
 http://creativecommons.org/licenses/by/3.0/
+
+Sounds ===
+
+Die folgenden Sounds stehen unter der Creative Commons — Attribution 4.0 Lizenz
+https://creativecommons.org/licenses/by/4.0
+
+EminYILDIRIM:
+- Sword Drop
+  https://freesound.org/people/EminYILDIRIM/sounds/536099
+  ItemRemove/Weapons/1.ogg
+- Sword Drop Medium
+  https://freesound.org/people/EminYILDIRIM/sounds/536102
+  ItemRemove/Weapons/2.ogg
+- Sword Drop Heavy
+  https://freesound.org/people/EminYILDIRIM/sounds/536100
+  ItemRemove/Weapons/3.ogg
+- Sword Drop Light
+  https://freesound.org/people/EminYILDIRIM/sounds/536101
+  ItemRemove/Weapons/4.ogg
