@@ -11,6 +11,7 @@ UmlautNormalizer = require("unitopia.umlautnormalizer")()
 
 CONFIG_FILE_NAME = "settings.dat"
 CurrentArea = ""
+CurrentDomain = ""
 
 Gmcp = nil
 
@@ -149,6 +150,12 @@ function OnUnitopiaRoomInfo(message, rawData)
     local domain, room = UmlautNormalizer:Normalize(info["domain"]), UmlautNormalizer:Normalize(info["name"])
     local matchingArea = nil
 
+    if CurrentDomain ~= domain then
+      PlaySound("Player/DomainChange.ogg")
+      CurrentDomain = domain
+      world.Note(CurrentDomain)
+    end
+    
     if room and room ~= 0 then
       -- Individual rooms take precedence over the city or domain
       room = room:lower()
