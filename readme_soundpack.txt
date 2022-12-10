@@ -26,12 +26,15 @@ Nummernblock 1: Suedwesten
 Nummernblock 2: Sueden
 Nummernblock 3: Suedosten
 Nummernblock 4: Westen
+Nummernblock 5: betrachte
 Nummernblock 6: Osten
 Nummernblock 7: Nordwesten
 Nummernblock 8: Norden
 Nummernblock 9: Nordosten
 Nummernblock Plus: Runter
 Nummernblock Minus: Hoch
+Nummernblock Schrägstrich: Ausdauerpunkte ansagen
+Nummernblock Stern: Zauberpunkte ansagen
 
 Tastenkombinationen für den Kanalverlauf ===
 

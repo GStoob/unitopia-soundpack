@@ -135,6 +135,14 @@
   sequence="100"
   >
   </trigger>
+  <trigger
+  enabled="y"
+  match="Du hast * eines langen Weges zurueckgelegt."
+  send_to="12"
+  sequence="100"
+  >
+  <send>OnUnitopiaProgress("%1")</send>
+  </trigger>
 
 </triggers>
 

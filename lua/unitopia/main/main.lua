@@ -34,8 +34,12 @@ CurrentHitpoints = nil
 CurrentSpellpoints = nil
 HitpointsFullAnnounced = true
 SpellpointsFullAnnounced = true
-HitpointsSound = nil
-SpellpointsSound = nil
+
+-- Player's stats
+CurrentStats = {}
+
+-- Player's progress
+CurrentProgress = nil
 
 function OnPluginConnect()
   -- Clear plugin list to prevent the plugins from being in an invalid state
@@ -76,6 +80,7 @@ function OnPluginConnect()
       gmcp.Listen("Comm.Soul", OnUnitopiaCommunication)
       gmcp.Listen("Room.Info", OnUnitopiaRoomInfo)
       gmcp.Listen("Char.Vitals", OnUnitopiaVitals)
+      gmcp.Listen("Char.Stats", OnUnitopiaStats)
       Gmcp = gmcp
     end,
     function(error)
@@ -106,6 +111,8 @@ function OnCoreHello(message, data)
 end
 
 function OnPluginDisconnect()
+  Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
+  Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
   PlaySound("Misc/Exit.ogg")
   ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
   world.Note("Benutzereinstellungen gespeichert.")
@@ -192,20 +199,63 @@ function OnUnitopiaVitals(message, rawData)
   end
 end
 
+function OnUnitopiaStats(message, rawData)
+  local difference, statDown, statName, statUp
+  for key, value in pairs(rawData) do
+    rawData[key] = tonumber(world.Replace(value, ",", "."))
+    if CurrentStats[key] ~= nil and CurrentStats[key] ~= rawData[key] then
+      difference = rawData[key] - CurrentStats[key]
+      -- Round the difference to 2 decimal places
+      difference = tonumber(string.format(" %.2f", difference))
+      if difference > 0 then
+        difference = "+" .. difference
+        statUp = true
+      else
+        statDown = true
+      end
+      difference = world.Replace(difference, ".", ",")
+      statName = Constants.StatNames[key]
+      if statName == nil then
+        statName = "Unbekannt"
+      end
+      world.Note(statName .. ": " .. value .. ", " .. difference)
+    end
+  end
+  CurrentStats = rawData
+  if statDown then
+    PlaySound("Player/StatDown.ogg")
+  end
+  if statUp then
+    PlaySound("Player/StatUp.ogg")
+  end
+end
+
+function OnUnitopiaProgress(progress)
+  local difference
+  progress = world.Replace(progress, ",", ".")
+  progress = world.Replace(progress, "%", "")
+  progress = tonumber(progress)
+  if CurrentProgress ~= nil and progress > CurrentProgress then
+    difference = math.abs(CurrentProgress - progress)
+    difference = "+" .. world.Replace(difference, ".", ",") .. "%"
+    world.Note("Gratulation! " .. difference)
+    PlaySound("Player/ProgressUp.ogg")
+  end
+  CurrentProgress = progress
+end
+
 function PlayHitpoints(newHitpoints, maxHitpoints)
   if CurrentHitpoints == nil then
     return
   end
 
-  Audio:StopIfPlaying(HitpointsSound)
-
   local percentage = newHitpoints / (maxHitpoints / 100)
 
   if newHitpoints > CurrentHitpoints then
-    HitpointsSound = PlaySound("Player/HpUp.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    PlaySound("Player/HpUp.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
     HitpointsFullAnnounced = false
   elseif newHitpoints < CurrentHitpoints then
-    HitpointsSound = PlaySound("Player/HpDown.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    PlaySound("Player/HpDown.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
     HitpointsFullAnnounced = false
   end
 
@@ -220,15 +270,13 @@ function PlaySpellpoints(newSpellpoints, maxSpellpoints)
     return
   end
 
-  Audio:StopIfPlaying(SpellpointsSound)
-
   local percentage = newSpellpoints / (maxSpellpoints / 100)
 
   if newSpellpoints > CurrentSpellpoints then
-    SpellpointsSound = PlaySound("Player/SpUp.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    PlaySound("Player/SpUp.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
     SpellpointsFullAnnounced = false
   elseif newSpellpoints < CurrentSpellpoints then
-    SpellpointsSound = PlaySound("Player/SpDown.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
+    PlaySound("Player/SpDown.ogg", UserConfig.Settings.SoundVolume, 2 * math.floor(percentage) - 100)
     SpellpointsFullAnnounced = false
   end
 
@@ -277,12 +325,15 @@ function InitializeNumPad()
   world.Accelerator("Numpad2", "s")
   world.Accelerator("Numpad3", "so")
   world.Accelerator("Numpad4", "w")
+  world.Accelerator("Numpad5", "betrachte")
   world.Accelerator("Numpad6", "o")
   world.Accelerator("Numpad7", "nw")
   world.Accelerator("Numpad8", "n")
   world.AcceleratorTo("Numpad9", 'world.Execute("no")', sendto.script)
   world.Accelerator("Add", "r")
   world.Accelerator("Subtract", "h")
+  world.AcceleratorTo("Divide", "SpeakCurrentHitpoints()", sendto.script)
+  world.AcceleratorTo("Multiply", "SpeakCurrentSpellpoints()", sendto.script)
 end
 
 function SwitchScreenReaderOutputPlugin()
@@ -297,4 +348,18 @@ function SwitchScreenReaderOutputPlugin()
   PluginManager:LoadPlugin(UserConfig.Settings.ScreenReaderPlugin .. ".xml")
   PlaySound("misc/switch.ogg")
   world.Note("Ausgabesystem geaendert.")
+end
+
+function SpeakCurrentHitpoints()
+  if CurrentHitpoints == nil then
+    return
+  end
+  world.Execute("tts_interrupt "..CurrentHitpoints.." AP")
+end
+
+function SpeakCurrentSpellpoints()
+  if CurrentSpellpoints == nil then
+    return
+  end
+  world.Execute("tts_interrupt "..CurrentSpellpoints.." ZP")
 end
