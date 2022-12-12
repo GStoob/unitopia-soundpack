@@ -277,10 +277,7 @@ function OnUnitopiaItems(message, rawData)
   if itemCategory == nil then
     return
   end
-  local sound = SoundIndex:Random(type .. "\\" .. itemCategory)
-  if sound ~= nil then
-    PlaySound(sound)
-  end
+  PlayRandomSound(type .. "\\" .. itemCategory)
 end
 
 function PlayHitpoints(newHitpoints, maxHitpoints)
