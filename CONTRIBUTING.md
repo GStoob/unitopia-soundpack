@@ -34,7 +34,7 @@ function Person:_init(firstName, lastName)
   self.LastName = lastName
 end
 
-  return Person
+return Person
 ```
 
 - Skriptdateien sollten im Ordner `lua/unitopia` abgelegt werden. Je nach Bedarf, können weitere Unterordner für die Kategorisierung angelegt werden.
