@@ -80,3 +80,28 @@ EminYILDIRIM:
 - Sword Drop Light
   https://freesound.org/people/EminYILDIRIM/sounds/536101
   ItemRemove/Weapons/4.ogg
+
+sonically_sound:
+- Coins Shake in Hand and Count
+  https://freesound.org/people/sonically_sound/sounds/635934
+  ItemAdd/Money/1.ogg bis 5.ogg (modifiziert)
+
+Die folgenden Sounds stehen unter der Creative Commons — Attribution 3.0 Lizenz
+http://creativecommons.org/licenses/by/3.0/
+
+jobro:
+- Sword pulled 1.wav
+  https://freesound.org/people/jobro/sounds/74831
+  ItemAdd/Weapons/1.ogg
+- Sword pulled 2.wav
+  https://freesound.org/people/jobro/sounds/74832
+  ItemAdd/Weapons/2.ogg
+- Sword pulled 3.wav
+  https://freesound.org/people/jobro/sounds/74833
+  ItemAdd/Weapons/3.ogg
+- Sword pulled 4.wav
+  https://freesound.org/people/jobro/sounds/74834
+  ItemAdd/Weapons/4.ogg
+- Sword pulled 5.wav
+  https://freesound.org/people/jobro/sounds/74835
+  ItemAdd/Weapons/5.ogg
