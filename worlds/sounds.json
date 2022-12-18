@@ -8,5 +8,10 @@
     "matchText": "*doch etwas besser schonen sollen*",
     "responseText": "PlaySound(\"Angel/WingError.ogg\")",
     "group": "Engel"
+  },
+  {
+    "matchText": "Tue beendet.",
+    "responseText": "PlaySound(\"Player/Done.ogg\")",
+    "group": ""
   }
 ]

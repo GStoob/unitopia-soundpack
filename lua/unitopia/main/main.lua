@@ -3,6 +3,7 @@ Audio = require("unitopia.audiosystem")()
 AreaHandler = require("unitopia.areahandler")
 ConfigurationManager = require("unitopia.configurationmanager")()
 PluginManager = require("unitopia.pluginmanager")()
+SoundIndex = require("unitopia.soundindex")()
 SoundLoader = require("unitopia.soundloader")()
 PPI = require("ppi")
 Path = require("pl.path")
@@ -10,6 +11,7 @@ UmlautNormalizer = require("unitopia.umlautnormalizer")()
 
 CONFIG_FILE_NAME = "settings.dat"
 CurrentArea = ""
+CurrentDomain = ""
 
 Gmcp = nil
 
@@ -81,6 +83,8 @@ function OnPluginConnect()
       gmcp.Listen("Room.Info", OnUnitopiaRoomInfo)
       gmcp.Listen("Char.Vitals", OnUnitopiaVitals)
       gmcp.Listen("Char.Stats", OnUnitopiaStats)
+      gmcp.Listen("Char.Items.Add", OnUnitopiaItems)
+      gmcp.Listen("Char.Items.Remove", OnUnitopiaItems)
       Gmcp = gmcp
     end,
     function(error)
@@ -146,6 +150,12 @@ function OnUnitopiaRoomInfo(message, rawData)
     local domain, room = UmlautNormalizer:Normalize(info["domain"]), UmlautNormalizer:Normalize(info["name"])
     local matchingArea = nil
 
+    if CurrentDomain ~= domain then
+      PlaySound("Player/DomainChange.ogg")
+      CurrentDomain = domain
+      world.Note(CurrentDomain)
+    end
+    
     if room and room ~= 0 then
       -- Individual rooms take precedence over the city or domain
       room = room:lower()
@@ -242,6 +252,32 @@ function OnUnitopiaProgress(progress)
     PlaySound("Player/ProgressUp.ogg")
   end
   CurrentProgress = progress
+end
+
+function OnUnitopiaItems(message, rawData)
+  local type
+  if message == "Char.Items.Add" then
+    type = "ItemAdd"
+  elseif message == "Char.Items.Remove" then
+    type = "ItemRemove"
+  else
+    return
+  end
+  if rawData["location"] == nil or rawData["location"] ~= "inv" then
+    return
+  end
+  local item = rawData["item"]
+  if item == nil then
+    return
+  end
+  if item["category"] == nil then
+    return
+  end
+  local itemCategory = Constants.ItemCategories[item["category"]]
+  if itemCategory == nil then
+    return
+  end
+  PlayRandomSound(type .. "\\" .. itemCategory)
 end
 
 function PlayHitpoints(newHitpoints, maxHitpoints)

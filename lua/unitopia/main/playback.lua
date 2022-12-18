@@ -95,3 +95,10 @@ function ToggleMute()
     PlaySound("Misc/Switch.ogg")
   end
 end
+
+function PlayRandomSound(path, volume, panning)
+  local sound = SoundIndex:Random(path)
+  if sound ~= nil then
+    PlaySound(sound, volume, panning)
+  end
+end
