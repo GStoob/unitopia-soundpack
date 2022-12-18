@@ -35,7 +35,7 @@ function SoundIndex:_init()
 end
 
 function SoundIndex:Random(path)
-  value = self.Index[path]
+  local value = self.Index[path]
   if value == nil then
     return nil
   end
