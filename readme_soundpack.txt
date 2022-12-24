@@ -62,6 +62,8 @@ Kevin MacLeod (incompetech.com)
 Licensed under Creative Commons: By Attribution 3.0
 http://creativecommons.org/licenses/by/3.0/
 
+Trauermarsch - Frederic Chopin
+
 Sounds ===
 
 Die folgenden Sounds stehen unter der Creative Commons — Attribution 4.0 Lizenz
@@ -105,3 +107,7 @@ jobro:
 - Sword pulled 5.wav
   https://freesound.org/people/jobro/sounds/74835
   ItemAdd/Weapons/5.ogg
+
+Weitere Sounds von u.a.
+Sonnis GDC Game Audio Bundles2015 - 2020
+https://sonniss.com/gameaudiogdc
