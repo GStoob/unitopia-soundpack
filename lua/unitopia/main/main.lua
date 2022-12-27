@@ -117,6 +117,8 @@ end
 function OnPluginDisconnect()
   Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
   Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
+  CurrentArea = ""
+  CurrentDomain = ""
   PlaySound("Misc/Exit.ogg")
   ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
   world.Note("Benutzereinstellungen gespeichert.")
