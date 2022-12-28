@@ -12,4 +12,4 @@ Also please consider to open an [issue](https://github.com/GStoob/unitopia-sound
 
 ## Licensing
 
-Please note that in general custom plugins and scripts written for the UNItopia Soundpack are licensed under the [MIT License](LICENSE). However, there are several components which are distributed via a different license, such as the MUSHclient ([see license_mushclient.txt])(license_mushclient.txt)) or various sounds / background music used in the soundpack ([see readme_soundpack.txt for more Infos](readme_soundpack.txt)).
+Please note that in general custom plugins and scripts written for the UNItopia Soundpack are licensed under the [MIT License](LICENSE). However, there are several components which are distributed via a different license, such as the MUSHclient ([see license_mushclient.txt](license_mushclient.txt)) or various sounds / background music used in the soundpack ([see readme_soundpack.txt for more Infos](readme_soundpack.txt)).
