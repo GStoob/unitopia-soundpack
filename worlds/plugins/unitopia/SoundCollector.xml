@@ -63,8 +63,8 @@ function Start()
   CreateJson()
 
   world.Note("Die benoetigten Informationen fuer das Sound-Ereignis befinden sich nun in der Zwischenablage und koennen mit STRG + V eingefuegt werden.")
-  world.Note("Du kannst FrankieT die Informationen via Ingame Mail schicken")
-  world.Note("Er freut sich sicher ueber deine Post!")
+  world.Note("Du kannst den Entwicklern des Soundpacks die Informationen via Ingame Mail oder via e-mail an info@unitopiasoundpack.ch schicken")
+  world.Note("Die Entwickler freuen sich sicher über deine Post!")
 
   Reset()
 end
@@ -80,7 +80,7 @@ end
 
 
 function AskIfTriggerContainsRegExp()
-  local isRegExp = utils.msgbox("Handelt es sich beim eingegebenen Sound-Ereignis um einen regulaeren Ausdruck? (Anmerkung: Bei Unsicherheit bitte mit nein antworten)", "SoundCollector", "yesno", "?", 1)
+  local isRegExp = utils.msgbox("Handelt es sich beim eingegebenen Trigger um einen regulaeren Ausdruck? (Anmerkung: Bei Unsicherheit bitte mit nein antworten)", "SoundCollector", "yesno", "?", 1)
 
   if isRegExp == "yes" then
     IsRegExp = true
