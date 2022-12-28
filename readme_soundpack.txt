@@ -1,15 +1,25 @@
-Features ===
+Herzlich willkommen zum UNItopia Soundpack!
 
-Das Soundpack bietet aktuell die Folgenden Features / Verbesserungen:
+Das Soundpack ist ein modifizierter MUSHclient, der mit diversen Plugins ausgestattet wurde, um das MUD UNItopia mit diversen Sounds zu untermalen. Die Hauptentwickler des Soundpacks sind Arija, Flarr und FrankieT.
 
-- Direkte Anbindung an den Screenreader
+Dieses Dokument bietet eine Übersicht über die Funktionen des Soundpacks. Bei Fragen, konstruktiver Kritik oder Ideen könnt ihr uns sehr gerne direkt im MUD ansprechen oder eine E-Mail an info@unitopiasoundpack.ch senden.
+
+Allgemeine Informationen
+===================
+
+Das Soundpack bietet aktuell die Folgenden Features / Anpassungen:
+
+- Direkte Anbindung an einen Screenreader
 - Wiedergabe von Sounds für verschiedene Ereignisse
 - Wiedergabe von Hintergrundgeräuschen in verschiedenen Umgebungen
 - Wiedergabe von Hintergrundmusik auf verschiedenen Kontinenten der Spielwelt
-- Ausgabefunktionen (output_functions, erleichtert allgemein das Nachlesen von Meldungen)
+- Ausgabefunktionen (output_functions, erleichtert allgemein das Nachlesen von Meldungen) welches dem bekannten Notepad-Fenster nachempfunden ist
 - Kanalverlauf (erleichtert das Nachlesen von erhaltenen Nachrichten über rede, sage usw.)
+- Ausblenden von sich ständig wiederholenden Meldungen (ist vor allem für Screen Reader Nutzer von Vorteil, um unnötigen Scroll zu vermeiden)
+- Ausblenden von sehr langen Meldungen auf Strassen und Wegen
 
-Allgemeine Tastenkombinationen ===
+Allgemeine Tastenkombinationen
+==============================
 
 F9: Lautstärke von Sounds verringern
 F10: Lautstärke von Sounds erhöhen
@@ -20,7 +30,10 @@ Steuerung+Umschalt+F10: Lautstärke der Hintergrundmusik erhöhen
 F11: Soundpack komplett stummschalten / Stummschaltung aufheben
 Steuerung+F12: TTS-Plugin umschalten (aktuell werden die Plugins MushReader und tts_jfw unterstützt)
 
-Bewegung per Nummernblock ===
+Bewegung per Nummernblock
+=========================
+
+Im Soundpack wurde auch der Nummernblock mit Funktionen ausgestattet. So gibt es beispielsweise die Möglichkeit, mit dem Nummbernblock in alle Himmelsrichtungen zu laufen oder sich die aktuellen AP und ZP ausgeben zu lassen. Nachfolgend eine Übersicht der Tasten und den dazugehörigen Funktionen:
 
 Nummernblock 1: Suedwesten
 Nummernblock 2: Sueden
@@ -33,18 +46,33 @@ Nummernblock 8: Norden
 Nummernblock 9: Nordosten
 Nummernblock Plus: Runter
 Nummernblock Minus: Hoch
-Nummernblock Schrägstrich: Ausdauerpunkte ansagen
-Nummernblock Stern: Zauberpunkte ansagen
+Nummernblock Schrägstrich: Ausdauerpunkte ausgeben
+Nummernblock Stern: Zauberpunkte ausgeben
 
-Tastenkombinationen für den Kanalverlauf ===
+Tastenkombinationen für den Kanalverlauf  (für Screen Reader Nutzer)
+========================================
 
-Alt+1 bis 0: Liest die letzte bis zehntletzte Nachricht im ausgewählten Kanal. Durch zweimaliges Drücken wird die Nachricht in die Zwischenablage kopiert. Durch dreimaliges Drücken wird die Nachricht eingefügt.
+Für Screen Reader Nutzer gibt es die Möglichkeit, die letzten 10 Nachrichten eines Kanals Client-intern abzufragen und in die Zwischenablage zu kopieren.
+
+Alt+1 bis 0: Liest die letzte bis zehntletzte Nachricht im ausgewählten Kanal. Durch zweimaliges Drücken wird die Nachricht in die Zwischenablage kopiert. Durch dreimaliges Drücken wird die Nachricht wieder eingefügt.
 Alt+Pfeil links: Zum vorherigen Kanal wechseln
 Alt+Pfeil rechts: Zum nächsten Kanal wechseln
 
-Credits ===
+Sound Collector
+===============
 
-Musik ===
+Falls ihr selber Ideen habt, welche Ereignisse im MUD vertont werden könnten, so gibt es die Möglichkeit, selber Sound Trigger zu erstellen. Dafür könnt ihr das Sound Collector Plugin benutzen, welches euch erlaubt, einen beliebigen Trigger in das für das Soundpack benötigte Format zu konvertieren. Dazu muss nur das Plugin gestartet werden und den Trigger Text in das dafür vorgesehene Abfragefenster eingefügt werden. Starten könnt ihr das Plugin mit dem Befehl "// sc start", ohne Anführungszeichen.
+Das Ergebnis könnt ihr entweder uns via Ingame Mail oder einer E-Mail zukommen lassen. Für die Coder unter euch besteht selbstverständlich auch die Möglichkeit, direkt einen neuen Pull Request auf GitHub zu öffnen. Bitte öffnet aber bei grösseren Features zuerst ein Issue!
+
+Bitte beachtet auch weiterhin folgende Punkte:
+- Das Team des UNItopia Soundpacks behält sich das Recht vor, selber zu entscheiden, ob und wie der erstellte Sound Trigger in das Soundpack eingepflegt wird.
+- Sollten eigene Sounds mit dem Sound Trigger mitgeliefert werden (beispielsweise als Dropbox-Link, E-Mail Anlage o.ä.), müsst ihr darauf achten, kein Copyright geschütztes Material zu nutzen!! Sendet uns daher bitte immer eine Quellenangabe mit - ansonsten werden wir das Tonmaterial nicht verwenden.
+
+Credits 
+=======
+
+Musik 
+----
 
 Nachfolgend eine Liste der Musikstücke, die im Soundpack verwendet werden:
 
@@ -62,9 +90,10 @@ Kevin MacLeod (incompetech.com)
 Licensed under Creative Commons: By Attribution 3.0
 http://creativecommons.org/licenses/by/3.0/
 
-Trauermarsch - Frederic Chopin
+Trauermarsch - Frederic Chopin (aus der YouTube Audio Library)
 
-Sounds ===
+Sounds
+------
 
 Die folgenden Sounds stehen unter der Creative Commons — Attribution 4.0 Lizenz
 https://creativecommons.org/licenses/by/4.0
@@ -111,3 +140,6 @@ jobro:
 Weitere Sounds von u.a.
 Sonnis GDC Game Audio Bundles2015 - 2020
 https://sonniss.com/gameaudiogdc
+
+Und nun wünschen wir euch viel Spass beim Spielen!
+Arija, Flarr und FrankieT
