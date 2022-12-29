@@ -58,5 +58,15 @@
     "name": "Arbeitszimmer des Todes",
     "ambience": "",
     "music": "Music/Tod.ogg"
+  },
+  {
+    "name": "Levitanis",
+    "ambience": "",
+    "music": "Music/Levitanis.ogg"
+  },
+  {
+    "name": "Pantheon",
+    "ambience": "",
+    "music": "Music/Pantheon.ogg"
   }
 ]
