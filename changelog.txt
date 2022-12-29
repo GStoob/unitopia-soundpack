@@ -1,7 +1,7 @@
 UNItopia Soundpack Changelog
 ============================
 
-Neu in Version 0.1.0, veröffentlicht am 28.12.2022:
+Neu in Version 0.1.0, veröffentlicht am 29.12.2022:
 * Erste Funktionen Hinzugefügt by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/2
 * Erste Sounds Hinzugefügt by @Arija418 in https://github.com/GStoob/unitopia-soundpack/pull/5
 * Neue Sounds by @Arija418 in https://github.com/GStoob/unitopia-soundpack/pull/6
