@@ -92,7 +92,7 @@ function OnPluginConnect()
     end
   )
 
-  PlaySound("Misc/SoundpackStart.ogg")
+  CurrentBackgroundMusicBeingPlayed = PlayMusic("Misc/SoundpackStart.ogg", UserConfig.Settings.MusicVolume, false)
   InitializeHotkeys()
   InitializeNumPad()
 end
@@ -117,6 +117,8 @@ end
 function OnPluginDisconnect()
   Audio:StopIfPlaying(CurrentAmbienceBeingPlayed)
   Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
+  CurrentArea = ""
+  CurrentDomain = ""
   PlaySound("Misc/Exit.ogg")
   ConfigurationManager:SaveUserConfig(CONFIG_FILE_NAME)
   world.Note("Benutzereinstellungen gespeichert.")

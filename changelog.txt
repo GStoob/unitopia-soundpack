@@ -1,0 +1,26 @@
+UNItopia Soundpack Changelog
+============================
+
+Neu in Version 0.1.0, veröffentlicht am 29.12.2022:
+* Erste Funktionen Hinzugefügt by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/2
+* Erste Sounds Hinzugefügt by @Arija418 in https://github.com/GStoob/unitopia-soundpack/pull/5
+* Neue Sounds by @Arija418 in https://github.com/GStoob/unitopia-soundpack/pull/6
+* Support für Generic MUD Communication Protocol by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/7
+* Unterstützung für Rauminfo eingebaut by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/8
+* Kommunication Via GMCP by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/9
+* Plugin für die Normalisierung der Umlaute by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/10
+* Engelsflug Hinzugefügt by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/11
+* Fehler im Audiosystem behoben by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/12
+* Kleinere Fehler behoben by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/13
+* Vitals mit Sounds untermalt by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/14
+* Fix für das Command Echo by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/15
+* Refactoring der Plugins und Lua Scripts by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/16
+* Verwenden von tts_jfw als weiteres Screen Reader Ausgabesystem by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/17
+* Neuer Handler für Areas by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/18
+* Auslagern der Sounds in eine JSON Datei, SoundCollector Plugin by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/19
+* Option Convert IAC EOR/GA to new line und Räume ohne Namen by @ralfmh in https://github.com/GStoob/unitopia-soundpack/pull/20
+* Channel History für das einfache Navigieren von erhaltenen Nachrichten by @ralfmh in https://github.com/GStoob/unitopia-soundpack/pull/21
+* Hintergrundmusik für die Kontinente und Anpassung von ein paar Welt-Optionen by @ralfmh in https://github.com/GStoob/unitopia-soundpack/pull/22
+* Diverse Änderungen by @ralfmh in https://github.com/GStoob/unitopia-soundpack/pull/23
+* Sounds für das Aufsammeln und Ablegen von Items by @ralfmh in https://github.com/GStoob/unitopia-soundpack/pull/25
+* Sound für das Sterben + Hintergrundmusik für das Arbeitszimmer des Tods by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/26

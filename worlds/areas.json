@@ -53,5 +53,10 @@
     "name": "Vaniorh",
     "ambience": "",
     "music": "Music/Vaniorh.ogg"
+  },
+  {
+    "name": "Arbeitszimmer des Todes",
+    "ambience": "",
+    "music": "Music/Tod.ogg"
   }
 ]
