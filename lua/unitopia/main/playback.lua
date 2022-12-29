@@ -18,9 +18,15 @@ function PlayAmbienceLoop(sound, volume)
   return Audio:PlayLooped(sound, volume, 0, UserConfig.Settings.AmbienceMuted)
 end
 
-function PlayMusic(musicFile, volume)
+function PlayMusic(musicFile, volume, playAsLoop)
+  playAsLoop = playAsLoop or true
   volume = volume or UserConfig.Settings.MusicVolume
-  return Audio:PlayLooped(musicFile, volume, 0, UserConfig.Settings.MusicMuted)
+
+  if playAsLoop then
+    return Audio:PlayLooped(musicFile, volume, 0, UserConfig.Settings.MusicMuted)
+  else
+    return Audio:Play(musicFile, volume, 0, UserConfig.Settings.SoundsMuted)
+  end
 end
 
 function SetSoundVolume(increment)
@@ -47,33 +53,33 @@ function SetAmbienceVolume(increment)
     if tonumber(CurrentAmbienceBeingPlayed) ~= nil and Audio:IsPlaying(CurrentAmbienceBeingPlayed) then
       Audio:SetVolume(UserConfig.Settings.AmbienceVolume, CurrentAmbienceBeingPlayed)
     end
-    else
-      if UserConfig.Settings.AmbienceVolume + increment > 100 then
-        world.Note("Das Maximum für die Umgebungs-Lautstaerke wurde erreicht.")
-      elseif UserConfig.Settings.AmbienceVolume + increment < 0 then
-        world.Note("Das Minimum für die Umgebungs-Lautstaerke wurde erreicht.")
-      end
-      PlaySound("Misc/Error.ogg")
+  else
+    if UserConfig.Settings.AmbienceVolume + increment > 100 then
+      world.Note("Das Maximum für die Umgebungs-Lautstaerke wurde erreicht.")
+    elseif UserConfig.Settings.AmbienceVolume + increment < 0 then
+      world.Note("Das Minimum für die Umgebungs-Lautstaerke wurde erreicht.")
     end
+    PlaySound("Misc/Error.ogg")
+  end
 end
 
 function SetMusicVolume(increment)
-    if UserConfig.Settings.MusicVolume + increment <= 100 and UserConfig.Settings.MusicVolume + increment >= 0 then
-      UserConfig.Settings.MusicVolume = UserConfig.Settings.MusicVolume + increment
-      PlaySound("Misc/Switch.ogg")
-      world.Note("Lautstaerke fuer Hintergrundmusik: " .. tostring(UserConfig.Settings.MusicVolume) .. "%.")
+  if UserConfig.Settings.MusicVolume + increment <= 100 and UserConfig.Settings.MusicVolume + increment >= 0 then
+    UserConfig.Settings.MusicVolume = UserConfig.Settings.MusicVolume + increment
+    PlaySound("Misc/Switch.ogg")
+    world.Note("Lautstaerke fuer Hintergrundmusik: " .. tostring(UserConfig.Settings.MusicVolume) .. "%.")
 
-      if tonumber(CurrentBackgroundMusicBeingPlayed) ~= nil and Audio:IsPlaying(CurrentBackgroundMusicBeingPlayed) then
-        Audio:SetVolume(UserConfig.Settings.MusicVolume, CurrentBackgroundMusicBeingPlayed)
-      end
-    else
-      if UserConfig.Settings.MusicVolume + increment > 100 then
-        world.Note("Das Maximum fuer die Hintergrundmusik-Lautstaerke wurde erreicht.")
-      elseif UserConfig.Settings.MusicVolume + increment < 0 then
-        world.Note("Das Minimum fuer die Hintergrundmusik-Lautstaerke wurde erreicht.")
-      end
-      PlaySound("Misc/Error.ogg")
+    if tonumber(CurrentBackgroundMusicBeingPlayed) ~= nil and Audio:IsPlaying(CurrentBackgroundMusicBeingPlayed) then
+      Audio:SetVolume(UserConfig.Settings.MusicVolume, CurrentBackgroundMusicBeingPlayed)
     end
+  else
+    if UserConfig.Settings.MusicVolume + increment > 100 then
+      world.Note("Das Maximum fuer die Hintergrundmusik-Lautstaerke wurde erreicht.")
+    elseif UserConfig.Settings.MusicVolume + increment < 0 then
+      world.Note("Das Minimum fuer die Hintergrundmusik-Lautstaerke wurde erreicht.")
+    end
+    PlaySound("Misc/Error.ogg")
+  end
 end
 
 function ToggleMute()
