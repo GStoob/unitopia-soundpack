@@ -1,6 +1,6 @@
 Herzlich willkommen zum UNItopia Soundpack!
 
-Das Soundpack ist ein modifizierter MUSHclient, der mit diversen Plugins ausgestattet wurde, um das MUD UNItopia mit diversen Sounds zu untermalen. Die Hauptentwickler des Soundpacks sind Arija, Flarr und FrankieT.
+Das Soundpack ist ein modifizierter MUSHclient, der mit zahlreichen Plugins ausgestattet wurde, um das MUD UNItopia mit diversen Sounds zu untermalen. Die Hauptentwickler des Soundpacks sind Arija, Flarr und FrankieT.
 
 Dieses Dokument bietet eine Übersicht über die Funktionen des Soundpacks. Bei Fragen, konstruktiver Kritik oder Ideen könnt ihr uns sehr gerne direkt im MUD ansprechen oder eine E-Mail an info@unitopiasoundpack.ch senden.
 
@@ -17,6 +17,16 @@ Das Soundpack bietet aktuell die Folgenden Features / Anpassungen:
 - Kanalverlauf (erleichtert das Nachlesen von erhaltenen Nachrichten über rede, sage usw.)
 - Ausblenden von sich ständig wiederholenden Meldungen (ist vor allem für Screen Reader Nutzer von Vorteil, um unnötigen Scroll zu vermeiden)
 - Ausblenden von sehr langen Meldungen auf Strassen und Wegen
+
+Die Sache mit den Umlauten
+--------------------------
+
+Euch dürfte wahrscheinlich nicht entgangen sein, dass Umlaute im Soundpack nicht berücksichtigt werden und daher die Text-Ausgabe so aussieht, wie es vor der Umstellung des MUDs auf den erweiterten Zeichensatz der Fall war. Der Hintergrund ist, dass das Encoding vom MUSHclient sehr limitiert ist und es schnell zu ernsteren Problemen führen kann, wenn Umlaute in Trigger o.ä. verwendet werden. Bis auf die Ausgabe bedeutet dies für euch jedoch keine weiteren Einschränkungen.
+
+Das Melden von Fehler
+---------------------
+
+Bei Fehlern, die während dem Spielen im Zusammenhang mit dem Soundpack auftreten, könnt ihr euch selbstverständlich an uns über Ingame- oder E-Mail wenden. Bitte beschreibt so genau wie möglich, was ihr getan habt und ab wann der Fehler aufgetreten ist. Ansonsten wird es schwer, den Fehler auf unserer Seite zu reproduzieren. Sendet, falls möglich, auch Log-Dateien mit, natürlich nicht ohne allfällige private Informationen zuerst zu maskieren.
 
 Allgemeine Tastenkombinationen
 ==============================
@@ -61,12 +71,12 @@ Alt+Pfeil rechts: Zum nächsten Kanal wechseln
 Sound Collector
 ===============
 
-Falls ihr selber Ideen habt, welche Ereignisse im MUD vertont werden könnten, so gibt es die Möglichkeit, selber Sound Trigger zu erstellen. Dafür könnt ihr das Sound Collector Plugin benutzen, welches euch erlaubt, einen beliebigen Trigger in das für das Soundpack benötigte Format zu konvertieren. Dazu muss nur das Plugin gestartet werden und den Trigger Text in das dafür vorgesehene Abfragefenster eingefügt werden. Starten könnt ihr das Plugin mit dem Befehl "// sc start", ohne Anführungszeichen.
-Das Ergebnis könnt ihr entweder uns via Ingame Mail oder einer E-Mail zukommen lassen. Für die Coder unter euch besteht selbstverständlich auch die Möglichkeit, direkt einen neuen Pull Request auf GitHub zu öffnen. Bitte öffnet aber bei grösseren Features zuerst ein Issue!
+Falls ihr eigene Ideen habt, welche Ereignisse im MUD vertont werden könnten, so gibt es die Möglichkeit, selber Sound Trigger zu erstellen. Dafür könnt ihr das Sound Collector Plugin benutzen, welches euch erlaubt, einen beliebigen Trigger in das für das Soundpack benötigte Format zu konvertieren. Dazu muss nur das Plugin gestartet werden und den Trigger Text in das dafür vorgesehene Abfragefenster eingefügt werden. Starten könnt ihr das Plugin mit dem Befehl "// sc start", ohne Anführungszeichen.
+Das Ergebnis könnt ihr uns entweder via Ingame Mail oder einer E-Mail zukommen lassen. Für die Coder unter euch besteht selbstverständlich auch die Möglichkeit, direkt einen neuen Pull Request auf GitHub zu öffnen. Bitte öffnet aber bei grösseren Features zuerst ein Issue!
 
 Bitte beachtet auch weiterhin folgende Punkte:
 - Das Team des UNItopia Soundpacks behält sich das Recht vor, selber zu entscheiden, ob und wie der erstellte Sound Trigger in das Soundpack eingepflegt wird.
-- Sollten eigene Sounds mit dem Sound Trigger mitgeliefert werden (beispielsweise als Dropbox-Link, E-Mail Anlage o.ä.), müsst ihr darauf achten, kein Copyright geschütztes Material zu nutzen!! Sendet uns daher bitte immer eine Quellenangabe mit - ansonsten werden wir das Tonmaterial nicht verwenden.
+- Sollten eigene Sounds mit dem Sound Trigger mitgeliefert werden (beispielsweise als Dropbox-Link, E-Mail Anlage o.ä.), müsst ihr darauf achten, kein Copyright geschütztes Material zu nutzen!! Sendet uns daher bitte immer eine Quellenangabe inklusive Link mit - ansonsten werden wir das Tonmaterial nicht verwenden.
 
 Credits 
 =======
@@ -91,6 +101,10 @@ Licensed under Creative Commons: By Attribution 3.0
 http://creativecommons.org/licenses/by/3.0/
 
 Trauermarsch - Frederic Chopin (aus der YouTube Audio Library)
+
+Weitere Musik u.a. von
+https://pixabay.com/
+
 
 Sounds
 ------
@@ -140,6 +154,9 @@ jobro:
 Weitere Sounds von u.a.
 Sonnis GDC Game Audio Bundles2015 - 2020
 https://sonniss.com/gameaudiogdc
+
+Free Sounds von Silver Platter Audio
+https://silverplatteraudio.com/pages/freebies
 
 Und nun wünschen wir euch viel Spass beim Spielen!
 Arija, Flarr und FrankieT
