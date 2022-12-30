@@ -18,5 +18,15 @@
     "matchText": "Du bist soeben gestorben.",
     "responseText": "PlaySound(\"Player/Die.ogg\")",
     "group": "Tod"
+  },
+  {
+    "matchText": "* fluechtet panisch nach *",
+    "responseText": "PlaySound(\"Misc/Flee.ogg\")",
+    "group": ""
+  },
+  {
+    "matchText": "* bruellt: *",
+    "responseText": "PlaySound(\"Comm/Shout.ogg\")",
+    "group": ""
   }
 ]
