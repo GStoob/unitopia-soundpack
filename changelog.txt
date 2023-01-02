@@ -1,7 +1,7 @@
 UNItopia Soundpack Changelog
 ============================
 
-Neu in Version 0.1.0, veröffentlicht am 29.12.2022:
+Neu in Version 0.1.0, veröffentlicht am 02.01.2022:
 * Erste Funktionen Hinzugefügt by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/2
 * Erste Sounds Hinzugefügt by @Arija418 in https://github.com/GStoob/unitopia-soundpack/pull/5
 * Neue Sounds by @Arija418 in https://github.com/GStoob/unitopia-soundpack/pull/6
@@ -24,3 +24,5 @@ Neu in Version 0.1.0, veröffentlicht am 29.12.2022:
 * Diverse Änderungen by @ralfmh in https://github.com/GStoob/unitopia-soundpack/pull/23
 * Sounds für das Aufsammeln und Ablegen von Items by @ralfmh in https://github.com/GStoob/unitopia-soundpack/pull/25
 * Sound für das Sterben + Hintergrundmusik für das Arbeitszimmer des Tods by @GStoob in https://github.com/GStoob/unitopia-soundpack/pull/26
+* Hintergrundmusik für Levitanis und Panteon by @ralfmh in https://github.com/GStoob/unitopia-soundpack/pull/30
+* Sounds für das Brüllen und Flüchten by @ralfmh in https://github.com/GStoob/unitopia-soundpack/pull/30
