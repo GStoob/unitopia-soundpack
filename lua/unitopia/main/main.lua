@@ -112,6 +112,8 @@ function OnCoreHello(message, data)
   PluginManager:LoadPlugin("unitopia/umlautnormalizer.xml")
   -- Since we have turned the option no_echo_off on, manually clear the command history to remove login credentials
   world.DeleteCommandHistory()
+  -- Stop the SoundpackStart music, which would otherwise keep on playing after login inappropriately
+  Audio:StopIfPlaying(CurrentBackgroundMusicBeingPlayed)
 end
 
 function OnPluginDisconnect()
